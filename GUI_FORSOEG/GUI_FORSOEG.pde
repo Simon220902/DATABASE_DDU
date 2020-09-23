@@ -59,8 +59,8 @@ void setup() {
      .setSize(80,20)
      .setGroup(g1)
      ;
-  ListBox l;
-  l = cp5.addListBox("myList")
+  ScrollableList l1;
+  l1 = cp5.addScrollableList("l1")
          .setPosition(10, 130)
          .setSize(80, 60)
          .setItemHeight(20)
@@ -71,9 +71,13 @@ void setup() {
          .setGroup(g1)
          ;
   for (int i=0;i<80;i++) {
-    ListBox lbi = l.addItem("BESKED "+i, i);
+    if(i%2==0){
+      l1.addItem("BESKED "+i, i);
+    }else{
+      l1.addItem("ANDENBESKED "+i, i);
+    }
   }
-  
+  //Næste gruppe
   Group g2 = cp5.addGroup("g2")
                 .setPosition(300,100)
                 .setWidth(300)
