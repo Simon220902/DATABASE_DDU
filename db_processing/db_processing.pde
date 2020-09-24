@@ -1,4 +1,7 @@
 import de.bezier.data.sql.*;
+import controlP5.*;
+
+ControlP5 cp5;
 
 int bx,by,bw,bh;
 
@@ -7,6 +10,11 @@ SQLite db;
 
 void setup(){
     size( 500, 500 );
+    
+    //CP5 things
+    cp5 = new ControlP5(this);
+    //EN
+    
     bx = 100;
     by = 100;
     bw = 100;
