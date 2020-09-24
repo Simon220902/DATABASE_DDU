@@ -1,3 +1,26 @@
+void login(int _){
+  //We need to get the password for the username if it is not the right password we need to do something something:___::_::_:;::?#€&%&#€%#€%#€%
+  String username = cp5.get(Textfield.class, "username").getText();
+  String password = cp5.get(Textfield.class, "password").getText();
+  
+  db.query( "SELECT * FROM USERS WHERE Username = '"+username+"';");
+  db.next();
+  String actualPassword = db.getString("Password");
+  
+  if(actualPassword == null){
+    //WE should probablby handle the java.sql.SQLException.
+    println("THE USER DOESN'T EXIST");
+    Textlabel w = cp5.get(Textlabel.class, "warning");
+    w.setText("The user doesn't exist. Are you trying to create a user? Press make user.");
+    warningScreen.group.show();
+  }else if (password.equals(actualPassword)){
+    println("GO RIGHT AHEAD");
+  }else{
+    println("THE PASSWORD IS NOT RIGHT");
+  }
+}
+
+//Consider using autoheight and autowidth and auto spacing for group
 Screen MakeLoginScreen(){
   int xBorder = int(width / 8);
   int yBorder = int(height / 10);
@@ -23,6 +46,7 @@ Screen MakeLoginScreen(){
                    ;
   
   PFont inputFont = createFont("Times",20);
+  
   //Username textInput 
   Textfield uT = cp5.addTextfield("username")
                     .setPosition(xGroupBorder, yGroupBorder + h.getHeight() + yGap )
@@ -61,11 +85,5 @@ Screen MakeLoginScreen(){
                  .setColorBackground(0)
                  .setGroup(loginGroup)
                  ;
-
   return new Screen(loginGroup, "loginScreen");
-}
-
-void login(){
-  println("USERNAME: ", cp5.get(Textfield.class, "username").getText());
-  println("PASSWORD: ", cp5.get(Textfield.class, "password").getText());
 }

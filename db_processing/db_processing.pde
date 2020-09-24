@@ -5,6 +5,7 @@ ControlP5 cp5;
 
 ScreenManager manager;
 Screen loginScreen;
+Screen warningScreen;
 
 SQLite db;
 
@@ -16,6 +17,9 @@ void setup(){
     
     loginScreen = MakeLoginScreen();
     manager.addScreen(loginScreen);
+    
+    warningScreen = MakeWarningScreen();
+    manager.addScreen(warningScreen);
 
 
     db = new SQLite( this, "chat.db" );  // open database file
@@ -34,7 +38,7 @@ void draw(){
 
 void keyPressed(){
   if (key == 'p'){
-    printInfoFromDatabase();
+    //printInfoFromDatabase();
   }
 }
 
