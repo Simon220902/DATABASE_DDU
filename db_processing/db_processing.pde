@@ -3,12 +3,13 @@ import controlP5.*;
 
 ControlP5 cp5;
 
-ScreenManager manager;
 Screen loginScreen;
 Screen newUserScreen;
 
-Screen successScreen;
-Screen warningScreen;
+TimedScreen successScreen;
+TimedScreen warningScreen;
+ArrayList<TimedScreen> timedScreens;
+
 
 SQLite db;
 
@@ -16,32 +17,34 @@ void setup(){
     size( 900, 700 );
     //CP5 things
     cp5 = new ControlP5(this);
-    manager = new ScreenManager();
     
     loginScreen = MakeLoginScreen();
-    manager.addScreen(loginScreen);
     
     newUserScreen = MakeNewUserScreen();
-    manager.addScreen(newUserScreen);
     
     successScreen = MakeSuccessScreen();
-    manager.addScreen(successScreen);
     
     warningScreen = MakeWarningScreen();
-    manager.addScreen(warningScreen);
-
-    newUserScreen.group.show();
-    //loginScreen.group.show();
+    
+    timedScreens = new ArrayList<TimedScreen>();
+    timedScreens.add(successScreen);
+    timedScreens.add(warningScreen);
+    
+    //newUserScreen.group.show();
+    loginScreen.group.show();
     
     db = new SQLite( this, "chat.db" );  // open database file
     db.connect();
 }
 
 void update(){
-  
+  for (TimedScreen ts : timedScreens){
+    ts.update();
+  }
 }
 
 void draw(){
+  update();
   background(0);
   //rect(bx, by, bw, bh); 
 }

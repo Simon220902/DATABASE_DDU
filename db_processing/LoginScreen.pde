@@ -12,23 +12,27 @@ void login(int _){
     Textlabel w = cp5.get(Textlabel.class, "warning");
     w.setText("The user doesn't exist.");
     successScreen.group.hide();
-    warningScreen.group.show();
+    warningScreen.show();
   }else if (password.equals(actualPassword)){
     Textlabel s = cp5.get(Textlabel.class, "success");
     s.setText("Successful login");
     warningScreen.group.hide();
-    successScreen.group.show();
+    successScreen.show();
+    
+    //HERE WE ARE GOING TO GET INTO THE ACTUAL MESSAGING APP WITH THAT USER.
   }else{
     Textlabel w = cp5.get(Textlabel.class, "warning");
     w.setText("The password is incorrect.");
     successScreen.group.hide();
-    warningScreen.group.show();
+    warningScreen.show();
   }
 }
 
 void newUser(int _){
   println("CREATE NEW USER");
-
+  //We shift to the new user screen
+  loginScreen.group.hide(); 
+  newUserScreen.group.show();
 }
 
 //Consider using autoheight and autowidth and auto spacing for group

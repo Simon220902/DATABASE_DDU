@@ -1,5 +1,3 @@
-import controlP5.*;
-
 class Screen{
   Group group;
   String name;

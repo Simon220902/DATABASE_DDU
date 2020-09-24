@@ -19,35 +19,44 @@ void createNewUser(int _){
       if (u == null){
         //We insert the new user and save the change to the data base
         db.execute("INSERT INTO Users (UserName, Password) VALUES ('" + username + "', '" + password1 + "');");
+        
+        //We show the successlabel
         Textlabel s = cp5.get(Textlabel.class, "success");
         s.setText("New user created");
         warningScreen.group.hide();
-        successScreen.group.show();
+        successScreen.show();
+        
+        //We clear the text fields
+        cp5.get(Textfield.class, "New username").setText("");
+        cp5.get(Textfield.class, "New password").setText("");
+        cp5.get(Textfield.class, "Repeat password").setText("");
+        
+        //We go back to the login screen
+        newUserScreen.group.hide();
+        loginScreen.group.show();
     }
     else{
       Textlabel w = cp5.get(Textlabel.class, "warning");
       w.setText("The user already exists.");
       successScreen.group.hide();
-      warningScreen.group.show();
+      warningScreen.show();
     }
   }else{
     Textlabel w = cp5.get(Textlabel.class, "warning");
     w.setText("The passwords don't match.");
     successScreen.group.hide();
-    warningScreen.group.show();
+    warningScreen.show();
   }
-  
-  
-  
-  
-  
-  
-  
-  println("USERNAME: ", username);
-  println("PASSWORD1: ", password1);
-  println("PASSWORD2: ", password2);
-  
-  println("Try to create the USER!!");
+}
+
+void returnToLogin(int _){
+  //We clear the text fields
+  cp5.get(Textfield.class, "New username").setText("");
+  cp5.get(Textfield.class, "New password").setText("");
+  cp5.get(Textfield.class, "Repeat password").setText("");
+  //We go back to the login screen
+  newUserScreen.group.hide();
+  loginScreen.group.show();
 }
 
 //Consider using autoheight and autowidth and auto spacing for group
@@ -65,7 +74,7 @@ Screen MakeNewUserScreen(){
                         ;
   
   int xGroupBorder = newUserGroup.getWidth() / 8;
-  int yGroupBorder = newUserGroup.getBackgroundHeight() / 10;
+  int yGroupBorder = newUserGroup.getBackgroundHeight() / 12;
   int yGap = yGroupBorder; //This value probably needs to be changed
   //Headline label
   Textlabel h = cp5.addTextlabel("l2")
@@ -125,12 +134,21 @@ Screen MakeNewUserScreen(){
   
   Button cB = cp5.addButton("createNewUser")
                  .setLabel("Create new user")
-                 .setPosition(xGroupBorder, yGroupBorder + h.getHeight() + yGap + uT.getHeight() + yGap + p1T.getHeight() + yGap + p2T.getHeight() + yGap/2)
-                 .setSize(newUserGroup.getWidth() - 2*xGroupBorder, int(1.5*yGap))
+                 .setPosition(2*xGroupBorder, yGroupBorder + h.getHeight() + yGap + uT.getHeight() + yGap + p1T.getHeight() + yGap + p2T.getHeight() + yGap/2)
+                 .setSize(newUserGroup.getWidth() - 4*xGroupBorder, int(1.5*yGap))
                  .setFont(inputFont)
                  .setColorBackground(0)
                  .setGroup(newUserGroup)
                  ;
-  
+
+  Button rB = cp5.addButton("returnToLogin")
+               .setLabel("← Return to login")
+               .setPosition(2*xGroupBorder, yGroupBorder + h.getHeight() + yGap + uT.getHeight() + yGap + p1T.getHeight() + yGap + p2T.getHeight() + yGap/2 + cB.getHeight() + yGap/2)
+               .setSize(newUserGroup.getWidth() - 4*xGroupBorder, int(1.5*yGap))
+               .setFont(inputFont)
+               .setColorBackground(0)
+               .setGroup(newUserGroup)
+               ;
+
   return new Screen(newUserGroup, "newUserScreen");
 }

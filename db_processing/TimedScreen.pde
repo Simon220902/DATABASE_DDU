@@ -1,4 +1,25 @@
-Screen MakeSuccessScreen(){
+class TimedScreen extends Screen{
+  int time;
+  int timeShown = 3000; //We show it for five seconds
+  
+  TimedScreen(Group g, String n){
+    super(g, n);
+  }
+  
+  void show(){
+    time = millis();
+    group.show();
+  }
+  void update(){
+    if (group.isVisible()){
+      if (millis() > time+timeShown){
+        group.hide();
+      }
+    }
+  }
+}
+
+TimedScreen MakeSuccessScreen(){
   //Warning label
   Group successGroup = cp5.addGroup("SuccessScreen")
                           .setPosition(0, 0)
@@ -16,10 +37,10 @@ Screen MakeSuccessScreen(){
                    .setGroup(successGroup)
                    ;
                    
-  return new Screen(successGroup, "successScreen");
+  return new TimedScreen(successGroup, "successScreen");
 }
 
-Screen MakeWarningScreen(){
+TimedScreen MakeWarningScreen(){
   //Warning label
   Group warningGroup = cp5.addGroup("WarningScreen")
                           .setPosition(0, 0)
@@ -37,5 +58,5 @@ Screen MakeWarningScreen(){
                    .setGroup(warningGroup)
                    ;
                    
-  return new Screen(warningGroup, "warningScreen");
+  return new TimedScreen(warningGroup, "warningScreen");
 }
