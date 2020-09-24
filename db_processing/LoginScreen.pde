@@ -88,8 +88,8 @@ Screen MakeLoginScreen(){
   pT.getCaptionLabel().align(ControlP5.LEFT, ControlP5.TOP_OUTSIDE);
   
   Button lB = cp5.addButton("login")
-                 .setPosition(xGroupBorder, yGroupBorder + h.getHeight() + yGap + uT.getHeight() + yGap + pT.getHeight() + yGap)
-                 .setSize(loginGroup.getWidth() - 2*xGroupBorder, yGap)
+                 .setPosition(2*xGroupBorder, yGroupBorder + h.getHeight() + yGap + uT.getHeight() + yGap + pT.getHeight() + yGap/2)
+                 .setSize(loginGroup.getWidth() - 4*xGroupBorder, int(1.5*yGap))
                  .setFont(inputFont)
                  .setColorBackground(0)
                  .setGroup(loginGroup)
@@ -97,8 +97,8 @@ Screen MakeLoginScreen(){
   
   Button nB = cp5.addButton("newUser")
                  .setLabel("New user")
-                 .setPosition(xGroupBorder, yGroupBorder + h.getHeight() + yGap + uT.getHeight() + yGap + pT.getHeight() + yGap + lB.getHeight() + yGap)
-                 .setSize(loginGroup.getWidth() - 2*xGroupBorder, yGap)
+                 .setPosition(2*xGroupBorder, yGroupBorder + h.getHeight() + yGap + uT.getHeight() + yGap + pT.getHeight() + yGap/2 + lB.getHeight() + yGap/2)
+                 .setSize(loginGroup.getWidth() - 4*xGroupBorder, int(1.5*yGap))
                  .setFont(inputFont)
                  .setColorBackground(0)
                  .setGroup(loginGroup)

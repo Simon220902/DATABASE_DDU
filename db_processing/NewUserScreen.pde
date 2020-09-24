@@ -85,8 +85,8 @@ Screen MakeNewUserScreen(){
   
   Button cB = cp5.addButton("createNewUser")
                  .setLabel("Create new user")
-                 .setPosition(xGroupBorder, yGroupBorder + h.getHeight() + yGap + uT.getHeight() + yGap + p1T.getHeight() + yGap + p2T.getHeight() + yGap)
-                 .setSize(newUserGroup.getWidth() - 2*xGroupBorder, yGap)
+                 .setPosition(xGroupBorder, yGroupBorder + h.getHeight() + yGap + uT.getHeight() + yGap + p1T.getHeight() + yGap + p2T.getHeight() + yGap/2)
+                 .setSize(newUserGroup.getWidth() - 2*xGroupBorder, int(1.5*yGap))
                  .setFont(inputFont)
                  .setColorBackground(0)
                  .setGroup(newUserGroup)

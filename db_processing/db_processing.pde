@@ -26,7 +26,8 @@ void setup(){
     warningScreen = MakeWarningScreen();
     manager.addScreen(warningScreen);
 
-    newUserScreen.group.show();
+    //newUserScreen.group.show();
+    loginScreen.group.show();
     
     db = new SQLite( this, "chat.db" );  // open database file
     db.connect();
