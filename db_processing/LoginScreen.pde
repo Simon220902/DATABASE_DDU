@@ -62,9 +62,10 @@ Screen MakeLoginScreen(){
                  .setGroup(loginGroup)
                  ;
 
-  return new Screen(loginGroup, "LoginScreen");
+  return new Screen(loginGroup, "loginScreen");
 }
 
 void login(){
-  println("HERE WE SHOULD ATTEMPT TO LOGIN");
+  println("USERNAME: ", cp5.get(Textfield.class, "username").getText());
+  println("PASSWORD: ", cp5.get(Textfield.class, "password").getText());
 }

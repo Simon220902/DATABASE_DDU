@@ -4,6 +4,7 @@ import controlP5.*;
 ControlP5 cp5;
 
 ScreenManager manager;
+Screen loginScreen;
 
 SQLite db;
 
@@ -12,8 +13,9 @@ void setup(){
     //CP5 things
     cp5 = new ControlP5(this);
     manager = new ScreenManager();
-    //Adding the loginscreen
-    manager.addScreen(MakeLoginScreen());
+    
+    loginScreen = MakeLoginScreen();
+    manager.addScreen(loginScreen);
 
 
     db = new SQLite( this, "chat.db" );  // open database file
@@ -28,6 +30,12 @@ void update(){
 void draw(){
   background(0);
   //rect(bx, by, bw, bh); 
+}
+
+void keyPressed(){
+  if (key == 'p'){
+    printInfoFromDatabase();
+  }
 }
 
 void printInfoFromDatabase(){
