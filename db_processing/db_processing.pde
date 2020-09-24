@@ -5,6 +5,8 @@ ControlP5 cp5;
 
 ScreenManager manager;
 Screen loginScreen;
+Screen newUserScreen;
+
 Screen warningScreen;
 
 SQLite db;
@@ -18,13 +20,16 @@ void setup(){
     loginScreen = MakeLoginScreen();
     manager.addScreen(loginScreen);
     
+    newUserScreen = MakeNewUserScreen();
+    manager.addScreen(newUserScreen);
+    
     warningScreen = MakeWarningScreen();
     manager.addScreen(warningScreen);
 
-
+    newUserScreen.group.show();
+    
     db = new SQLite( this, "chat.db" );  // open database file
     db.connect();
-    
 }
 
 void update(){

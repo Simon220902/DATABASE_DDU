@@ -15,9 +15,18 @@ void login(int _){
     warningScreen.group.show();
   }else if (password.equals(actualPassword)){
     println("GO RIGHT AHEAD");
+    warningScreen.group.hide();
   }else{
     println("THE PASSWORD IS NOT RIGHT");
+    Textlabel w = cp5.get(Textlabel.class, "warning");
+    w.setText("The password is incorrect.");
+    warningScreen.group.show();
   }
+}
+
+void newUser(int _){
+  println("CREATE NEW USER");
+
 }
 
 //Consider using autoheight and autowidth and auto spacing for group
@@ -31,6 +40,7 @@ Screen MakeLoginScreen(){
                         .setBackgroundHeight(height - 2*yBorder)
                         .setBackgroundColor(color(200, 155))
                         .hideBar()
+                        .hide()
                         ;
   
   int xGroupBorder = loginGroup.getWidth() / 8;
@@ -78,12 +88,21 @@ Screen MakeLoginScreen(){
   pT.getCaptionLabel().align(ControlP5.LEFT, ControlP5.TOP_OUTSIDE);
   
   Button lB = cp5.addButton("login")
-                 .setValue(100)
                  .setPosition(xGroupBorder, yGroupBorder + h.getHeight() + yGap + uT.getHeight() + yGap + pT.getHeight() + yGap)
                  .setSize(loginGroup.getWidth() - 2*xGroupBorder, yGap)
                  .setFont(inputFont)
                  .setColorBackground(0)
                  .setGroup(loginGroup)
                  ;
+  
+  Button nB = cp5.addButton("newUser")
+                 .setLabel("New user")
+                 .setPosition(xGroupBorder, yGroupBorder + h.getHeight() + yGap + uT.getHeight() + yGap + pT.getHeight() + yGap + lB.getHeight() + yGap)
+                 .setSize(loginGroup.getWidth() - 2*xGroupBorder, yGap)
+                 .setFont(inputFont)
+                 .setColorBackground(0)
+                 .setGroup(loginGroup)
+                 ;
+  
   return new Screen(loginGroup, "loginScreen");
 }
