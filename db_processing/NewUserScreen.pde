@@ -3,6 +3,46 @@ void createNewUser(int _){
   String password1 = cp5.get(Textfield.class, "New password").getText();
   String password2 = cp5.get(Textfield.class, "Repeat password").getText();
   
+  //1st check whether the two passwords are the same
+  
+  //2nd check whether there already exists an entry in the user database with that user name.
+  
+  //3rd if all of the above apply then add the new user and go back to 
+  
+  if (password1.equals(password2)){
+      db.query( "SELECT UserName FROM USERS WHERE UserName = '"+username+"';");
+      db.next();
+      String u = db.getString("UserName");
+      println();
+      println("RESULT", u);
+      println();
+      if (u == null){
+        //We insert the new user and save the change to the data base
+        db.execute("INSERT INTO Users (UserName, Password) VALUES ('" + username + "', '" + password1 + "');");
+        Textlabel s = cp5.get(Textlabel.class, "success");
+        s.setText("New user created");
+        warningScreen.group.hide();
+        successScreen.group.show();
+    }
+    else{
+      Textlabel w = cp5.get(Textlabel.class, "warning");
+      w.setText("The user already exists.");
+      successScreen.group.hide();
+      warningScreen.group.show();
+    }
+  }else{
+    Textlabel w = cp5.get(Textlabel.class, "warning");
+    w.setText("The passwords don't match.");
+    successScreen.group.hide();
+    warningScreen.group.show();
+  }
+  
+  
+  
+  
+  
+  
+  
   println("USERNAME: ", username);
   println("PASSWORD1: ", password1);
   println("PASSWORD2: ", password2);

@@ -7,6 +7,7 @@ ScreenManager manager;
 Screen loginScreen;
 Screen newUserScreen;
 
+Screen successScreen;
 Screen warningScreen;
 
 SQLite db;
@@ -23,11 +24,14 @@ void setup(){
     newUserScreen = MakeNewUserScreen();
     manager.addScreen(newUserScreen);
     
+    successScreen = MakeSuccessScreen();
+    manager.addScreen(successScreen);
+    
     warningScreen = MakeWarningScreen();
     manager.addScreen(warningScreen);
 
-    //newUserScreen.group.show();
-    loginScreen.group.show();
+    newUserScreen.group.show();
+    //loginScreen.group.show();
     
     db = new SQLite( this, "chat.db" );  // open database file
     db.connect();
@@ -43,8 +47,8 @@ void draw(){
 }
 
 void keyPressed(){
-  if (key == 'p'){
-    //printInfoFromDatabase();
+  if (key == 'm'){
+    printInfoFromDatabase();
   }
 }
 

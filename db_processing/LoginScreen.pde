@@ -3,23 +3,25 @@ void login(int _){
   String username = cp5.get(Textfield.class, "username").getText();
   String password = cp5.get(Textfield.class, "password").getText();
   
-  db.query( "SELECT * FROM USERS WHERE Username = '"+username+"';");
+  db.query( "SELECT * FROM USERS WHERE UserName = '"+username+"';");
   db.next();
   String actualPassword = db.getString("Password");
   
   if(actualPassword == null){
     //WE should probablby handle the java.sql.SQLException.
-    println("THE USER DOESN'T EXIST");
     Textlabel w = cp5.get(Textlabel.class, "warning");
-    w.setText("The user doesn't exist. Are you trying to create a user? Press make user.");
+    w.setText("The user doesn't exist.");
+    successScreen.group.hide();
     warningScreen.group.show();
   }else if (password.equals(actualPassword)){
-    println("GO RIGHT AHEAD");
+    Textlabel s = cp5.get(Textlabel.class, "success");
+    s.setText("Successful login");
     warningScreen.group.hide();
+    successScreen.group.show();
   }else{
-    println("THE PASSWORD IS NOT RIGHT");
     Textlabel w = cp5.get(Textlabel.class, "warning");
     w.setText("The password is incorrect.");
+    successScreen.group.hide();
     warningScreen.group.show();
   }
 }
