@@ -19,6 +19,14 @@ void login(int _){
     warningScreen.group.hide();
     successScreen.show();
     
+    //We clear the text fields
+    cp5.get(Textfield.class, "username").setText("");
+    cp5.get(Textfield.class, "password").setText("");
+    
+    //We update the session and change which screens are shown
+    session.updateUser(db.getInt("UserID") , username);
+    session.pickChat();
+
     //HERE WE ARE GOING TO GET INTO THE ACTUAL MESSAGING APP WITH THAT USER.
   }else{
     Textlabel w = cp5.get(Textlabel.class, "warning");

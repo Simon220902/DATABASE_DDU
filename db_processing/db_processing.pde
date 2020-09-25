@@ -10,6 +10,7 @@ TimedScreen successScreen;
 TimedScreen warningScreen;
 ArrayList<TimedScreen> timedScreens;
 
+Session session = new Session();
 
 SQLite db;
 
@@ -51,7 +52,11 @@ void draw(){
 
 void keyPressed(){
   if (key == 'm'){
-    printInfoFromDatabase();
+    //printInfoFromDatabase();
+  }else if (key == 's'){
+    println("USERID: ", session.currentUserID);
+    println("USER: ", session.currentUser);
+    println("CHAT: ", session.currentChatTable);
   }
 }
 
