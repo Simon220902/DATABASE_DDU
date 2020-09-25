@@ -13,9 +13,6 @@ void createNewUser(int _){
       db.query( "SELECT UserName FROM USERS WHERE UserName = '"+username+"';");
       db.next();
       String u = db.getString("UserName");
-      println();
-      println("RESULT", u);
-      println();
       if (u == null){
         //We insert the new user and save the change to the data base
         db.execute("INSERT INTO Users (UserName, Password) VALUES ('" + username + "', '" + password1 + "');");

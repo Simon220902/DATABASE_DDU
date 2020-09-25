@@ -29,7 +29,6 @@ void login(int _){
 }
 
 void newUser(int _){
-  println("CREATE NEW USER");
   //We shift to the new user screen
   loginScreen.group.hide(); 
   newUserScreen.group.show();
