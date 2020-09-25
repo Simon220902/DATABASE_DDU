@@ -59,9 +59,9 @@ void draw(){
 }
 
 void keyPressed(){
-  if (key == 'm'){
-    //printInfoFromDatabase();
-    updateChatScreen();
+  //SPACE
+  if (keyCode == 32){
+    printInfoFromDatabase();
   }
 }
 

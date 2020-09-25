@@ -1,6 +1,6 @@
 class TimedScreen extends Screen{
   int time;
-  int timeShown = 500; //We show it for five seconds
+  int timeShown = 1000; //We show it for five seconds
   
   TimedScreen(Group g, String n){
     super(g, n);

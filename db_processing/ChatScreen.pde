@@ -14,21 +14,22 @@ int yMessageList;
 PFont f;
 
 void send(int _){
-  println("A MESSAGE WAS SENT");
-  String message = cp5.get(Textfield.class, "MessageInput").getText(); 
-  db.execute("INSERT INTO " + session.currentChatTable + "(Message, Time, UserID) VALUES "+"('"+message+"', datetime('now','localtime'),"+ str(session.currentUserID) +");");
-  cp5.get(Textfield.class, "MessageInput").setText("");
-  //PROBABLY A BIT SLOW
-  updateChatScreen();
+  if(session.currentChatTable != null){
+    String message = cp5.get(Textfield.class, "MessageInput").getText(); 
+    String userID = str(session.currentUserID);
+    db.execute("INSERT INTO " + session.currentChatTable + "(Message, Time, UserID) VALUES "+"('"+message+"', datetime('now','localtime'),"+ userID +");");
+    cp5.get(Textfield.class, "MessageInput").setText("");
+    //Instead we should do the following:
+    ListBox messageList = cp5.get(ListBox.class, "MessageList");
+    messageList.addItem(userID+": "+message,messageList.getItems().size());
+    
+  }else{
+    Textlabel w = cp5.get(Textlabel.class, "warning");
+    w.setText("You have to be in a chat to send a message.");
+    successScreen.group.hide();
+    warningScreen.show();
+  }
 }
- 
-/*
-MessageID INTEGER PRIMARY KEY AUTOINCREMENT,
-Message TEXT NOT NULL,
-Time TEXT,
-UserID INT NOT NULL)
-
-*/ 
  
 
 Screen MakeChatScreen(){
@@ -73,9 +74,6 @@ Screen MakeChatScreen(){
                            .setBarVisible(false)
                            .setGroup(chatGroup)
                            ;
-  for (int i=0;i<80;i++) {
-      messageList.addItem("MESSAGE: "+i, i);
-  }
   
   int messageInputFieldAndSendButton = chatGroup.getWidth() - 2*xScreenGap;
   Textfield messageInput = cp5.addTextfield("MessageInput")
@@ -102,27 +100,33 @@ Screen MakeChatScreen(){
 
 //Call when sessions chattable has been updated.
 void updateChatScreen(){
-  cp5.remove(cp5.get("MessageList"));
-  ListBox messageList = cp5.addListBox("MessageList")
-                           .setPosition(xScreenGap, yMessageList)
-                           .setSize(chatScreen.group.getWidth() - 2*xScreenGap, 15*(chatListTextfieldHeight/16))
-                           .setItemHeight(30)
-                           .setColorBackground(color(200))
-                           .setColorActive(color(200))
-                           .setColorForeground(color(200))
-                           .setFont(f)
-                           .setBarVisible(false)
-                           .setGroup(chatScreen.group)
-                           ;
-
-  //SQL QUERY
-  db.query("SELECT * FROM " + session.currentChatTable + ";");
-
-  //RUNNING THROUGH EACH OF THE RESULTS
-  int i = 0;
-  while(db.next()){
-      messageList.addItem(str(db.getInt("UserID"))+": "+db.getString("Message"), i);
-      i++;
-  }
+  if(session.currentChatTable != null){
+    ListBox messageList = cp5.addListBox("MessageList")
+                             .setPosition(xScreenGap, yMessageList)
+                             .setSize(chatScreen.group.getWidth() - 2*xScreenGap, 15*(chatListTextfieldHeight/16))
+                             .setItemHeight(30)
+                             .setColorBackground(color(200))
+                             .setColorActive(color(200))
+                             .setColorForeground(color(200))
+                             .setFont(f)
+                             .setBarVisible(false)
+                             .setGroup(chatScreen.group)
+                             ;
+    //Alternatively find a way to delete all of the items in the ListBox.
   
+    //SQL QUERY
+    db.query("SELECT * FROM " + session.currentChatTable + ";");
+  
+    //RUNNING THROUGH EACH OF THE RESULTS
+    int i = 0;
+    while(db.next()){
+        messageList.addItem(str(db.getInt("UserID"))+": "+db.getString("Message"), i);
+        i++;
+    }
+  }else{
+    Textlabel w = cp5.get(Textlabel.class, "warning");
+    w.setText("You don't have any chats.");
+    successScreen.group.hide();
+    warningScreen.show();
+  }
 }
