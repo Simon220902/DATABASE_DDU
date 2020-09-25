@@ -2,6 +2,7 @@ void logout(int _){
   session.clear();
   //We shift to the login screen
   sessionScreen.group.hide();
+  chatScreen.group.hide();
   //HIDE ALL THE CHAT SCREENS AND STUFF
   loginScreen.group.show();
   

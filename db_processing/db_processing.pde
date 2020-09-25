@@ -38,9 +38,9 @@ void setup(){
     timedScreens.add(warningScreen);
     
     //newUserScreen.group.show();
-    //loginScreen.group.show();
+    loginScreen.group.show();
     //sessionScreen.group.show();
-    chatScreen.group.show();
+    //chatScreen.group.show();
     
     db = new SQLite( this, "chat.db" );  // open database file
     db.connect();
@@ -61,6 +61,7 @@ void draw(){
 void keyPressed(){
   if (key == 'm'){
     //printInfoFromDatabase();
+    updateChatScreen();
   }
 }
 

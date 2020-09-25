@@ -30,6 +30,9 @@ void login(int _){
     
     loginScreen.group.hide();
     sessionScreen.group.show();
+    chatScreen.group.show();
+    updateChatScreen();
+    
     
     
     //HERE WE ARE GOING TO GET INTO THE ACTUAL MESSAGING APP WITH THAT USER.
