@@ -1,6 +1,6 @@
 class TimedScreen extends Screen{
   int time;
-  int timeShown = 3000; //We show it for five seconds
+  int timeShown = 500; //We show it for five seconds
   
   TimedScreen(Group g, String n){
     super(g, n);
@@ -20,7 +20,7 @@ class TimedScreen extends Screen{
 }
 
 TimedScreen MakeSuccessScreen(){
-  //Warning label
+  //Success label
   Group successGroup = cp5.addGroup("SuccessScreen")
                           .setPosition(0, 0)
                           .setWidth(width)

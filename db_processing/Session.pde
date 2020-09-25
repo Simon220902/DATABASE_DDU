@@ -21,4 +21,10 @@ class Session{
       currentChatTable = newChatTable;
     }
   }
+  
+  void clear(){
+    currentUserID = 0;
+    currentUser = "";
+    currentChatTable = "";
+  }
 }

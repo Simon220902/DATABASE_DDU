@@ -23,10 +23,15 @@ void login(int _){
     cp5.get(Textfield.class, "username").setText("");
     cp5.get(Textfield.class, "password").setText("");
     
-    //We update the session and change which screens are shown
+    //We update the session, sessionscreen and change which screens are shown
     session.updateUser(db.getInt("UserID") , username);
     session.pickChat();
-
+    cp5.get(Textlabel.class, "user").setText(session.currentUser);    
+    
+    loginScreen.group.hide();
+    sessionScreen.group.show();
+    
+    
     //HERE WE ARE GOING TO GET INTO THE ACTUAL MESSAGING APP WITH THAT USER.
   }else{
     Textlabel w = cp5.get(Textlabel.class, "warning");

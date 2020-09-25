@@ -5,6 +5,7 @@ ControlP5 cp5;
 
 Screen loginScreen;
 Screen newUserScreen;
+Screen sessionScreen;
 
 TimedScreen successScreen;
 TimedScreen warningScreen;
@@ -23,6 +24,8 @@ void setup(){
     
     newUserScreen = MakeNewUserScreen();
     
+    sessionScreen = MakeSessionScreen();
+    
     successScreen = MakeSuccessScreen();
     
     warningScreen = MakeWarningScreen();
@@ -33,6 +36,7 @@ void setup(){
     
     //newUserScreen.group.show();
     loginScreen.group.show();
+    //sessionScreen.group.show();
     
     db = new SQLite( this, "chat.db" );  // open database file
     db.connect();
@@ -53,10 +57,6 @@ void draw(){
 void keyPressed(){
   if (key == 'm'){
     //printInfoFromDatabase();
-  }else if (key == 's'){
-    println("USERID: ", session.currentUserID);
-    println("USER: ", session.currentUser);
-    println("CHAT: ", session.currentChatTable);
   }
 }
 
