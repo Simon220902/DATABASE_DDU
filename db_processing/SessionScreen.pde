@@ -35,7 +35,6 @@ Screen MakeSessionScreen(){
                .setPosition(0, 0)
                .setSize(buttonWidth, buttonHeight)
                .setColorBackground(color(100))
-               //.setColorForeground(color(150))
                .setFont(f)
                .setGroup(sessionGroup)
                ;

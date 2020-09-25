@@ -6,6 +6,7 @@ ControlP5 cp5;
 Screen loginScreen;
 Screen newUserScreen;
 Screen sessionScreen;
+Screen chatScreen;
 
 TimedScreen successScreen;
 TimedScreen warningScreen;
@@ -26,6 +27,8 @@ void setup(){
     
     sessionScreen = MakeSessionScreen();
     
+    chatScreen = MakeChatScreen();
+    
     successScreen = MakeSuccessScreen();
     
     warningScreen = MakeWarningScreen();
@@ -35,8 +38,9 @@ void setup(){
     timedScreens.add(warningScreen);
     
     //newUserScreen.group.show();
-    loginScreen.group.show();
+    //loginScreen.group.show();
     //sessionScreen.group.show();
+    chatScreen.group.show();
     
     db = new SQLite( this, "chat.db" );  // open database file
     db.connect();
