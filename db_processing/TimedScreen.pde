@@ -10,6 +10,7 @@ class TimedScreen extends Screen{
     time = millis();
     group.show();
   }
+  
   void update(){
     if (group.isVisible()){
       if (millis() > time+timeShown){

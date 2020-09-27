@@ -7,6 +7,7 @@ Screen loginScreen;
 Screen newUserScreen;
 Screen sessionScreen;
 Screen chatScreen;
+Screen newChatScreen;
 
 TimedScreen successScreen;
 TimedScreen warningScreen;
@@ -29,6 +30,8 @@ void setup(){
     
     chatScreen = MakeChatScreen();
     
+    newChatScreen = MakeNewChatScreen();
+    
     successScreen = MakeSuccessScreen();
     
     warningScreen = MakeWarningScreen();
@@ -41,6 +44,7 @@ void setup(){
     loginScreen.group.show();
     //sessionScreen.group.show();
     //chatScreen.group.show();
+    //newChatScreen.group.show();
     
     db = new SQLite( this, "chat.db" );  // open database file
     db.connect();
@@ -63,6 +67,12 @@ void keyPressed(){
   if (keyCode == 32){
     printInfoFromDatabase();
   }
+  // THE CODE BELOW SHALL BE CALLED FROM THE CHATLIST NEW CHAT BUTTON!
+  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  else if(keyCode == UP){
+    newChatScreen.group.show();
+    updateNewChatScreen();
+  }
 }
 
 void printInfoFromDatabase(){
@@ -83,6 +93,7 @@ void printInfoFromDatabase(){
       chatTableNames.add(tableName);
       println( " | ", db.getInt("ChatID"), " | ", tableName, " | ", db.getString("UserID1"), " | ", db.getString("UserID2"), " | ");
   }
+  
   //All messages in alle the chats
   for (String tableName : chatTableNames){
     println("WE PRINT ALL THE MESSAGES FROM ", tableName);
