@@ -14,6 +14,10 @@ int messageListHeight;
 
 PFont f;
 
+void MessageInput(String _){
+  send(0);
+}
+
 void send(int _){
   if(session.currentChatTable != null){
     String message = cp5.get(Textfield.class, "MessageInput").getText(); 
@@ -29,7 +33,6 @@ void send(int _){
     }else{
       messageList.setHeight(messageListHeight);    
     }
-    
   }else{
     Textlabel w = cp5.get(Textlabel.class, "warning");
     w.setText("You have to be in a chat to send a message.");
@@ -37,7 +40,6 @@ void send(int _){
     warningScreen.show();
   }
 }
- 
 
 Screen MakeChatScreen(){
   f = createFont("Times", 15);
