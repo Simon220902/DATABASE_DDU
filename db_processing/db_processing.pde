@@ -62,16 +62,18 @@ void draw(){
   //rect(bx, by, bw, bh); 
 }
 
+// When a user from the list is picked we create a chat with that user
+void controlEvent(ControlEvent theEvent) {
+  controlEventNewChatScreen(theEvent);
+  //controlEventChatListScreen(theEvent);
+  
+}
+
+
 void keyPressed(){
-  //SPACE
+  //SPACE PRINTS ALL THE INFO IN THE DATABASE
   if (keyCode == 32){
-    printInfoFromDatabase();
-  }
-  // THE CODE BELOW SHALL BE CALLED FROM THE CHATLIST NEW CHAT BUTTON!
-  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  else if(keyCode == UP){
-    newChatScreen.group.show();
-    updateNewChatScreen();
+    //printInfoFromDatabase();
   }
 }
 

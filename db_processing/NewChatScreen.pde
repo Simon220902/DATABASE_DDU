@@ -69,7 +69,7 @@ void updateNewChatScreen(){
 }
 
 // When a user from the list is picked we create a chat with that user
-void controlEvent(ControlEvent theEvent) {
+void controlEventNewChatScreen(ControlEvent theEvent) {
   //THE PROGRAM CRASHES IF YOU CLICK INSIDE THE AREA OF THE LISTBOX BUT WITHOUT THE ELEMENT
   ListBox usersList = cp5.get(ListBox.class, "UsersList");
   if (theEvent.isFrom(usersList)) {
@@ -77,7 +77,6 @@ void controlEvent(ControlEvent theEvent) {
     int activeIndex = int(theEvent.getValue());
     if (usersList.getItems().size()-1 >= activeIndex){
       Map<String, Object> listEntry = usersList.getItem(activeIndex);
-      println(listEntry);
       String chosenUsername = (String) listEntry.get("text");
       int chosenUserID = (int) listEntry.get("value");
       println("THE USERID: ", str(chosenUserID));
@@ -90,6 +89,7 @@ void controlEvent(ControlEvent theEvent) {
       db.execute("INSERT INTO CHATS (ChatTableName, UserID1, UserID2) VALUES ('" + newChatName +  "', " + str(session.currentUserID) + ", " + str(chosenUserID) + ");");
       //Set this new chattable as the sessions chattable
       session.updateChat(newChatName);
+      //updateChatListScreen();
       //Give a success message and return to the chat screens.
       Textlabel s = cp5.get(Textlabel.class, "success");
       s.setText("Created a chat with "+ chosenUsername + " called " + newChatName);
@@ -97,12 +97,14 @@ void controlEvent(ControlEvent theEvent) {
       successScreen.show();
       //Returning to the chat
       newChatScreen.group.hide();
+      //chatListScreen.group.show();
+      chatScreen.group.show();
     }
   }
 }
 
 void back(int _){
   newChatScreen.group.hide();
-  //We should, depending on whether we hide the chat, show the chat and chatlist screens again.
-  println(_);
+  //chatListScreen.group.show();
+  chatScreen.group.show();
 }

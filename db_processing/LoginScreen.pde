@@ -32,6 +32,8 @@ void login(int _){
     sessionScreen.group.show();
     chatScreen.group.show();
     updateChatScreen();
+    //chatListScreen.group.show();
+    //updateNewChatScreen();
     
     
     
