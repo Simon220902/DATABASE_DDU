@@ -41,6 +41,52 @@ void send(int _){
   }
 }
 
+  
+  
+
+Group MakeChatListGroup() {
+  xGap = 2 * width/30;
+  yGap = height/10;
+  chooseChatGroupWidth = 8 * width/30;
+  
+  Group chatListGroup = cp5.addGroup("ChatListGroup")
+                        .setPosition(xGap,yGap)
+                        .setWidth(chooseChatGroupWidth)
+                        .setBackgroundHeight(height-2*yGap)
+                        .setBackgroundColor(color(150))
+                        .hideBar()
+                        .hide()
+                        
+                        ;
+  Textlabel clL = cp5.addTextlabel("chatListTitle")
+                        .setPosition(xGroupGap, yGroupGap)
+                        .setText("CHATLISTTITLE")
+                        .setColorValue(color(255))
+                        .setFont(f)
+                        .setGroup(chatListGroup) 
+                        ;
+  
+  ListBox indiChat = cp5.addListBox("ChatList")
+                        .setWidth(chooseChatGroupWidth-xGap)
+                        .setPosition(xGroupGap, yGroupGap + 20)
+
+                        .setGroup(chatListGroup) 
+                        
+                        ;
+                        
+  Button addChat = cp5.addButton("newChat")
+                        .setPosition(chooseChatGroupWidth-xGap,height-2*yGap-yGap)
+                        .setWidth(xGap/2)
+                        .setCaptionLabel("+")
+                        .setGroup(chatListGroup)
+                        ;
+  
+  return chatListGroup;
+}
+ 
+
+
+
 Group MakeChatGroup(){
   f = createFont("Times", 15);
   
