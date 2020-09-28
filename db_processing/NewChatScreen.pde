@@ -1,12 +1,12 @@
 import java.util.Map;
 
-Screen MakeNewChatScreen(){
+Group MakeNewChatGroup(){
   f = createFont("Times", 15);
   
   xGap = 2 * width/30;
   yGap = height/10;
   
-  Group newChatGroup = cp5.addGroup("NewChatScreen")
+  Group newChatGroup = cp5.addGroup("NewChatGroup")
                        .setPosition(xGap, yGap)
                        .setWidth(width - 2*xGap)
                        .setBackgroundHeight(height - 2*yGap)
@@ -14,23 +14,23 @@ Screen MakeNewChatScreen(){
                        .hideBar()
                        .hide()
                        ;
-  yScreenGap = newChatGroup.getBackgroundHeight()/15;
-  xScreenGap = newChatGroup.getWidth()/15;
+  yGroupGap = newChatGroup.getBackgroundHeight()/15;
+  xGroupGap = newChatGroup.getWidth()/15;
   
   Textlabel ncL = cp5.addTextlabel("newChatTitle")
-                   .setPosition(xScreenGap, yScreenGap)
+                   .setPosition(xGroupGap, yGroupGap)
                    .setText("Make a new chat with:")
                    .setColorValue(color(255))
                    .setFont(f)
                    .setGroup(newChatGroup)
                    ;
 
-  int yUsersList = yScreenGap+ncL.getHeight();
+  int yUsersList = yGroupGap+ncL.getHeight();
   int backButtonHeight = 40;
   
   ListBox usersList = cp5.addListBox("UsersList")
-                           .setPosition(xScreenGap, yUsersList)
-                           .setSize(newChatGroup.getWidth() - 2*xScreenGap, newChatGroup.getBackgroundHeight() - 3*yScreenGap - backButtonHeight)
+                           .setPosition(xGroupGap, yUsersList)
+                           .setSize(newChatGroup.getWidth() - 2*xGroupGap, newChatGroup.getBackgroundHeight() - 3*yGroupGap - backButtonHeight)
                            .setItemHeight(30)
                            .setColorBackground(color(200))
                            .setColorActive(color(50))
@@ -43,17 +43,17 @@ Screen MakeNewChatScreen(){
   usersList.addItem("SECOND ITEM!", 1);
   
   Button bB = cp5.addButton("back")
-                 .setPosition(xScreenGap, yUsersList + usersList.getHeight() + yScreenGap)
-                 .setSize(newChatGroup.getWidth() - 2*xScreenGap, backButtonHeight)
+                 .setPosition(xGroupGap, yUsersList + usersList.getHeight() + yGroupGap)
+                 .setSize(newChatGroup.getWidth() - 2*xGroupGap, backButtonHeight)
                  .setFont(f)
                  .setColorBackground(color(100))
                  .setGroup(newChatGroup)
                  ;
   
-  return new Screen(newChatGroup, "newChatScreen");
+  return newChatGroup;
 }
 
-void updateNewChatScreen(){
+void updateNewChatGroup(){
   //OKAY SO WHA
   ListBox usersList = cp5.get(ListBox.class, "UsersList");
   usersList.clear();
@@ -69,7 +69,7 @@ void updateNewChatScreen(){
 }
 
 // When a user from the list is picked we create a chat with that user
-void controlEventNewChatScreen(ControlEvent theEvent) {
+void controlEventNewChatGroup(ControlEvent theEvent) {
   //THE PROGRAM CRASHES IF YOU CLICK INSIDE THE AREA OF THE LISTBOX BUT WITHOUT THE ELEMENT
   ListBox usersList = cp5.get(ListBox.class, "UsersList");
   if (theEvent.isFrom(usersList)) {
@@ -89,22 +89,22 @@ void controlEventNewChatScreen(ControlEvent theEvent) {
       db.execute("INSERT INTO CHATS (ChatTableName, UserID1, UserID2) VALUES ('" + newChatName +  "', " + str(session.currentUserID) + ", " + str(chosenUserID) + ");");
       //Set this new chattable as the sessions chattable
       session.updateChat(newChatName);
-      //updateChatListScreen();
-      //Give a success message and return to the chat screens.
+      //updateChatListGroup();
+      //Give a success message and return to the chat Groups.
       Textlabel s = cp5.get(Textlabel.class, "success");
       s.setText("Created a chat with "+ chosenUsername + " called " + newChatName);
-      warningScreen.group.hide();
-      successScreen.show();
+      warningGroup.hide();
+      successGroup.show();
       //Returning to the chat
-      newChatScreen.group.hide();
-      //chatListScreen.group.show();
-      chatScreen.group.show();
+      newChatGroup.hide();
+      //chatListGroup.group.show();
+      chatGroup.show();
     }
   }
 }
 
 void back(int _){
-  newChatScreen.group.hide();
-  //chatListScreen.group.show();
-  chatScreen.group.show();
+  newChatGroup.hide();
+  //chatListGroup.group.show();
+  chatGroup.show();
 }

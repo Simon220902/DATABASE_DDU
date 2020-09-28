@@ -10,7 +10,7 @@ class Session{
   
   void updateChat(String newChatTable){
     currentChatTable = newChatTable;
-    updateChatScreen();
+    updateChatGroup();
   }
   
   void pickChat(){

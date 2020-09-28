@@ -1,8 +1,8 @@
 /*
-//THIS IS READY FOR THE SCREEN JUST CALL THE LIST CHATLIST AND BUTTON newChat
-int chatListHeight; //SET THE VALUE OF THIS VARIABLE IN THE MakeNewChatListScreen function!!!!!!!!!!!!!!!!!!!
+//THIS IS READY FOR THE Group JUST CALL THE LIST CHATLIST AND BUTTON newChat
+int chatListHeight; //SET THE VALUE OF THIS VARIABLE IN THE MakeNewChatListGroup function!!!!!!!!!!!!!!!!!!!
 
-void updateChatListScreen(){
+void updateChatListGroup(){
   ListBox chatList = cp5.get(ListBox.class, "ChatList");
   if(session.currentChatTable != null){
     chatList.clear();
@@ -17,8 +17,8 @@ void updateChatListScreen(){
   }else{
     Textlabel w = cp5.get(Textlabel.class, "warning");
     w.setText("You don't have any chats, click on the button to create one.");
-    successScreen.group.hide();
-    warningScreen.show();
+    successGroup.hide();
+    warningGroup.show();
   }
   //Updates the height to dodge java.lang.IndexOutOfBoundsException, that comes when clicking in the messageList, where there is no items
   if(chatList.getItems().size()*30<chatListHeight){
@@ -29,13 +29,13 @@ void updateChatListScreen(){
 }
 
 void newChat(){
-  newChatScreen.group.show();
-  chatListScreen.group.hide();
-  chatScreen.group.hide();
+  newChatGroup.show();
+  chatListGroup.hide();
+  chatGroup.hide();
 }
 
 // When a chat from the list is picked we change the current chat to that chat
-void controlEventChatListScreen(ControlEvent theEvent) {
+void controlEventChatListGroup(ControlEvent theEvent) {
   //THE PROGRAM CRASHES IF YOU CLICK INSIDE THE AREA OF THE LISTBOX BUT WITHOUT THE ELEMENT
   ListBox chatList = cp5.get(ListBox.class, "ChatList");
   if (theEvent.isFrom(chatList)) {
@@ -47,11 +47,11 @@ void controlEventChatListScreen(ControlEvent theEvent) {
       println("THE CHOSEN CHAT IS: ", chosenChat);
       //Set this new chattable as the sessions chattable
       session.updateChat(chosenChat);
-      //Give a success message and return to the chat screens.
+      //Give a success message and return to the chat Groups.
       Textlabel s = cp5.get(Textlabel.class, "success");
       s.setText("Changed current chat to " + chosenChat);
-      warningScreen.group.hide();
-      successScreen.show();
+      warningGroup.group.hide();
+      successGroup.show();
     }
   }
 }

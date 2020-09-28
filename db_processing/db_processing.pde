@@ -3,15 +3,15 @@ import controlP5.*;
 
 ControlP5 cp5;
 
-Screen loginScreen;
-Screen newUserScreen;
-Screen sessionScreen;
-Screen chatScreen;
-Screen newChatScreen;
+Group loginGroup;
+Group newUserGroup;
+Group sessionGroup;
+Group chatGroup;
+Group newChatGroup;
 
-TimedScreen successScreen;
-TimedScreen warningScreen;
-ArrayList<TimedScreen> timedScreens;
+TimedGroup successGroup;
+TimedGroup warningGroup;
+ArrayList<TimedGroup> timedGroups;
 
 Session session = new Session();
 
@@ -22,36 +22,36 @@ void setup(){
     //CP5 things
     cp5 = new ControlP5(this);
     
-    loginScreen = MakeLoginScreen();
+    loginGroup = MakeLoginGroup();
     
-    newUserScreen = MakeNewUserScreen();
+    newUserGroup = MakeNewUserGroup();
     
-    sessionScreen = MakeSessionScreen();
+    sessionGroup = MakeSessionGroup();
     
-    chatScreen = MakeChatScreen();
+    chatGroup = MakeChatGroup();
     
-    newChatScreen = MakeNewChatScreen();
+    newChatGroup = MakeNewChatGroup();
     
-    successScreen = MakeSuccessScreen();
+    successGroup = MakeSuccessGroup();
     
-    warningScreen = MakeWarningScreen();
+    warningGroup = MakeWarningGroup();
     
-    timedScreens = new ArrayList<TimedScreen>();
-    timedScreens.add(successScreen);
-    timedScreens.add(warningScreen);
+    timedGroups = new ArrayList<TimedGroup>();
+    timedGroups.add(successGroup);
+    timedGroups.add(warningGroup);
     
-    //newUserScreen.group.show();
-    loginScreen.group.show();
-    //sessionScreen.group.show();
-    //chatScreen.group.show();
-    //newChatScreen.group.show();
+    //newUserGroup.group.show();
+    loginGroup.show();
+    //sessionGroup.group.show();
+    //chatGroup.group.show();
+    //newChatGroup.group.show();
     
     db = new SQLite( this, "chat.db" );  // open database file
     db.connect();
 }
 
 void update(){
-  for (TimedScreen ts : timedScreens){
+  for (TimedGroup ts : timedGroups){
     ts.update();
   }
 }
@@ -64,8 +64,8 @@ void draw(){
 
 // When a user from the list is picked we create a chat with that user
 void controlEvent(ControlEvent theEvent) {
-  controlEventNewChatScreen(theEvent);
-  //controlEventChatListScreen(theEvent);
+  controlEventNewChatGroup(theEvent);
+  //controlEventChatListGroup(theEvent);
   
 }
 
