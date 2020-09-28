@@ -7,6 +7,7 @@ Screen loginScreen;
 Screen newUserScreen;
 Screen sessionScreen;
 Screen chatScreen;
+Screen chatList;
 
 TimedScreen successScreen;
 TimedScreen warningScreen;
@@ -28,6 +29,8 @@ void setup(){
     sessionScreen = MakeSessionScreen();
     
     chatScreen = MakeChatScreen();
+    
+    chatList = MakeChatList();
     
     successScreen = MakeSuccessScreen();
     

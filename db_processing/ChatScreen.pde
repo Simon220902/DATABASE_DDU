@@ -2,18 +2,28 @@ void send(int _){
   println("A MESSAGE WAS SENT");
 }
 
-Screen MakeChatList() {
-  
-  
-}
- 
-
-Screen MakeChatScreen(){
   int xGap = 2 * width/30;
   int yGap = height/10;
   
   int chooseChatScreenWidth = 8 * width/30;
   int chatScreenWidth = 16 * width/30;
+
+Screen MakeChatList() {
+  
+  Group chatList = cp5.addGroup("ChatList")
+                        .setPosition(xGap,yGap)
+                        .setWidth(chooseChatScreenWidth)
+                        .setBackgroundHeight(height-2*yGap)
+                        .setBackgroundColor(color(150))
+                        .hideBar()
+                        .hide()
+                        ;
+  
+}
+ 
+
+Screen MakeChatScreen(){
+
   
 
   Group chatGroup = cp5.addGroup("ChatScreen")
