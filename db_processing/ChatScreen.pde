@@ -1,6 +1,11 @@
 void send(int _){
   println("A MESSAGE WAS SENT");
 }
+
+Screen MakeChatList() {
+  
+  
+}
  
 
 Screen MakeChatScreen(){
