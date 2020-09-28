@@ -32,8 +32,8 @@ void login(int _){
     sessionGroup.show();
     chatGroup.show();
     updateChatGroup();
-    //chatListGroup.show();
-    //updateNewChatGroup();
+    chatListGroup.show();
+    updateNewChatGroup();
     
     
     

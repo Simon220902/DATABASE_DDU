@@ -8,6 +8,7 @@ Group newUserGroup;
 Group sessionGroup;
 Group chatGroup;
 Group newChatGroup;
+Group chatListGroup;
 
 TimedGroup successGroup;
 TimedGroup warningGroup;
@@ -30,9 +31,8 @@ void setup(){
     
     chatGroup = MakeChatGroup();
     
-    chatList = MakeChatList();
+    chatListGroup = MakeChatListGroup();
     
-    successScreen = MakeSuccessScreen();
     newChatGroup = MakeNewChatGroup();
     
     successGroup = MakeSuccessGroup();
@@ -45,9 +45,10 @@ void setup(){
     
     //newUserGroup.group.show();
     loginGroup.show();
-    //sessionGroup.group.show();
-    //chatGroup.group.show();
-    //newChatGroup.group.show();
+    //chatListGroup.show();
+    //sessionGroup.show();
+    //chatGroup.show();
+    //newChatGroup.show();
     
     db = new SQLite( this, "chat.db" );  // open database file
     db.connect();

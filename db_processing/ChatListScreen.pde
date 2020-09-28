@@ -1,4 +1,4 @@
-/*
+
 //THIS IS READY FOR THE Group JUST CALL THE LIST CHATLIST AND BUTTON newChat
 int chatListHeight; //SET THE VALUE OF THIS VARIABLE IN THE MakeNewChatListGroup function!!!!!!!!!!!!!!!!!!!
 
@@ -55,4 +55,3 @@ void controlEventChatListGroup(ControlEvent theEvent) {
     }
   }
 }
-*/
