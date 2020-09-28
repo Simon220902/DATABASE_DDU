@@ -20,29 +20,29 @@ void createNewUser(int _){
         //We show the successlabel
         Textlabel s = cp5.get(Textlabel.class, "success");
         s.setText("New user created");
-        warningScreen.group.hide();
-        successScreen.show();
+        warningGroup.hide();
+        successGroup.show();
         
         //We clear the text fields
         cp5.get(Textfield.class, "New username").setText("");
         cp5.get(Textfield.class, "New password").setText("");
         cp5.get(Textfield.class, "Repeat password").setText("");
         
-        //We go back to the login screen
-        newUserScreen.group.hide();
-        loginScreen.group.show();
+        //We go back to the login Group
+        newUserGroup.hide();
+        loginGroup.show();
     }
     else{
       Textlabel w = cp5.get(Textlabel.class, "warning");
       w.setText("The user already exists.");
-      successScreen.group.hide();
-      warningScreen.show();
+      successGroup.hide();
+      warningGroup.show();
     }
   }else{
     Textlabel w = cp5.get(Textlabel.class, "warning");
     w.setText("The passwords don't match.");
-    successScreen.group.hide();
-    warningScreen.show();
+    successGroup.hide();
+    warningGroup.show();
   }
 }
 
@@ -51,17 +51,17 @@ void returnToLogin(int _){
   cp5.get(Textfield.class, "New username").setText("");
   cp5.get(Textfield.class, "New password").setText("");
   cp5.get(Textfield.class, "Repeat password").setText("");
-  //We go back to the login screen
-  newUserScreen.group.hide();
-  loginScreen.group.show();
+  //We go back to the login Group
+  newUserGroup.hide();
+  loginGroup.show();
 }
 
 //Consider using autoheight and autowidth and auto spacing for group
-Screen MakeNewUserScreen(){
+Group MakeNewUserGroup(){
   int xBorder = int(width / 8);
   int yBorder = int(height / 15);
   
-  Group newUserGroup = cp5.addGroup("newUserScreen")
+  Group newUserGroup = cp5.addGroup("newUserGroup")
                         .setPosition(xBorder, yBorder)
                         .setWidth(width - 2*xBorder)
                         .setBackgroundHeight(height - 2*yBorder)
@@ -147,5 +147,5 @@ Screen MakeNewUserScreen(){
                .setGroup(newUserGroup)
                ;
 
-  return new Screen(newUserGroup, "newUserScreen");
+  return newUserGroup;
 }

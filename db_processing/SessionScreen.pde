@@ -1,22 +1,23 @@
 void logout(int _){
   session.clear();
-  //We shift to the login screen
-  sessionScreen.group.hide();
-  //HIDE ALL THE CHAT SCREENS AND STUFF
-  loginScreen.group.show();
+  //We shift to the login Group
+  sessionGroup.hide();
+  chatGroup.hide();
+  //HIDE ALL THE CHAT GroupS AND STUFF
+  loginGroup.show();
   
 }
 
-Screen MakeSessionScreen(){
-  int screenWidth = (width/2);
-  int screenHeight = height/10;  
-  int buttonWidth = (screenWidth/4);
-  int buttonHeight = screenHeight;
+Group MakeSessionGroup(){
+  int GroupWidth = (width/2);
+  int GroupHeight = height/10;  
+  int buttonWidth = (GroupWidth/4);
+  int buttonHeight = GroupHeight;
   //Success label
-  Group sessionGroup = cp5.addGroup("SessionScreen")
-                          .setPosition(width - screenWidth, 0)
-                          .setWidth(screenWidth)
-                          .setBackgroundHeight(screenHeight)
+  Group sessionGroup = cp5.addGroup("SessionGroup")
+                          .setPosition(width - GroupWidth, 0)
+                          .setWidth(GroupWidth)
+                          .setBackgroundHeight(GroupHeight)
                           .setBackgroundColor(color(150))
                           .hideBar()
                           .hide()
@@ -29,7 +30,7 @@ Screen MakeSessionScreen(){
                    .setFont(f)
                    .setGroup(sessionGroup)
                    ;
-  u.setPosition(buttonWidth, screenHeight/2 - u.getHeight()/2);
+  u.setPosition(buttonWidth, GroupHeight/2 - u.getHeight()/2);
 
   Button lB = cp5.addButton("logout")
                .setPosition(0, 0)
@@ -39,5 +40,5 @@ Screen MakeSessionScreen(){
                .setGroup(sessionGroup)
                ;
                    
-  return new Screen(sessionGroup, "sessionScreen");
+  return sessionGroup;
 }

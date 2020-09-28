@@ -3,15 +3,15 @@ import controlP5.*;
 
 ControlP5 cp5;
 
-Screen loginScreen;
-Screen newUserScreen;
-Screen sessionScreen;
-Screen chatScreen;
-Screen chatList;
+Group loginGroup;
+Group newUserGroup;
+Group sessionGroup;
+Group chatGroup;
+Group newChatGroup;
 
-TimedScreen successScreen;
-TimedScreen warningScreen;
-ArrayList<TimedScreen> timedScreens;
+TimedGroup successGroup;
+TimedGroup warningGroup;
+ArrayList<TimedGroup> timedGroups;
 
 Session session = new Session();
 
@@ -22,35 +22,39 @@ void setup(){
     //CP5 things
     cp5 = new ControlP5(this);
     
-    loginScreen = MakeLoginScreen();
+    loginGroup = MakeLoginGroup();
     
-    newUserScreen = MakeNewUserScreen();
+    newUserGroup = MakeNewUserGroup();
     
-    sessionScreen = MakeSessionScreen();
+    sessionGroup = MakeSessionGroup();
     
-    chatScreen = MakeChatScreen();
+    chatGroup = MakeChatGroup();
     
     chatList = MakeChatList();
     
     successScreen = MakeSuccessScreen();
+    newChatGroup = MakeNewChatGroup();
     
-    warningScreen = MakeWarningScreen();
+    successGroup = MakeSuccessGroup();
     
-    timedScreens = new ArrayList<TimedScreen>();
-    timedScreens.add(successScreen);
-    timedScreens.add(warningScreen);
+    warningGroup = MakeWarningGroup();
     
-    //newUserScreen.group.show();
-    //loginScreen.group.show();
-    //sessionScreen.group.show();
-    chatScreen.group.show();
+    timedGroups = new ArrayList<TimedGroup>();
+    timedGroups.add(successGroup);
+    timedGroups.add(warningGroup);
+    
+    //newUserGroup.group.show();
+    loginGroup.show();
+    //sessionGroup.group.show();
+    //chatGroup.group.show();
+    //newChatGroup.group.show();
     
     db = new SQLite( this, "chat.db" );  // open database file
     db.connect();
 }
 
 void update(){
-  for (TimedScreen ts : timedScreens){
+  for (TimedGroup ts : timedGroups){
     ts.update();
   }
 }
@@ -61,8 +65,17 @@ void draw(){
   //rect(bx, by, bw, bh); 
 }
 
+// When a user from the list is picked we create a chat with that user
+void controlEvent(ControlEvent theEvent) {
+  controlEventNewChatGroup(theEvent);
+  //controlEventChatListGroup(theEvent);
+  
+}
+
+
 void keyPressed(){
-  if (key == 'm'){
+  //SPACE PRINTS ALL THE INFO IN THE DATABASE
+  if (keyCode == 32){
     //printInfoFromDatabase();
   }
 }
@@ -85,6 +98,7 @@ void printInfoFromDatabase(){
       chatTableNames.add(tableName);
       println( " | ", db.getInt("ChatID"), " | ", tableName, " | ", db.getString("UserID1"), " | ", db.getString("UserID2"), " | ");
   }
+  
   //All messages in alle the chats
   for (String tableName : chatTableNames){
     println("WE PRINT ALL THE MESSAGES FROM ", tableName);

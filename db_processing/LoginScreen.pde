@@ -11,48 +11,53 @@ void login(int _){
     //WE should probablby handle the java.sql.SQLException.
     Textlabel w = cp5.get(Textlabel.class, "warning");
     w.setText("The user doesn't exist.");
-    successScreen.group.hide();
-    warningScreen.show();
+    successGroup.hide();
+    warningGroup.show();
   }else if (password.equals(actualPassword)){
     Textlabel s = cp5.get(Textlabel.class, "success");
     s.setText("Successful login");
-    warningScreen.group.hide();
-    successScreen.show();
+    warningGroup.hide();
+    successGroup.show();
     
     //We clear the text fields
     cp5.get(Textfield.class, "username").setText("");
     cp5.get(Textfield.class, "password").setText("");
     
-    //We update the session, sessionscreen and change which screens are shown
+    //We update the session, sessionGroup and change which Groups are shown
     session.updateUser(db.getInt("UserID") , username);
     session.pickChat();
     cp5.get(Textlabel.class, "user").setText(session.currentUser);    
     
-    loginScreen.group.hide();
-    sessionScreen.group.show();
+    loginGroup.hide();
+    sessionGroup.show();
+    chatGroup.show();
+    updateChatGroup();
+    //chatListGroup.show();
+    //updateNewChatGroup();
+    
     
     
     //HERE WE ARE GOING TO GET INTO THE ACTUAL MESSAGING APP WITH THAT USER.
   }else{
     Textlabel w = cp5.get(Textlabel.class, "warning");
     w.setText("The password is incorrect.");
-    successScreen.group.hide();
-    warningScreen.show();
+    successGroup.hide();
+    warningGroup.show();
   }
 }
 
 void newUser(int _){
-  //We shift to the new user screen
-  loginScreen.group.hide(); 
-  newUserScreen.group.show();
+  //We shift to the new user Group
+  loginGroup.hide(); 
+  newUserGroup.show();
 }
 
 //Consider using autoheight and autowidth and auto spacing for group
-Screen MakeLoginScreen(){
+Group MakeLoginGroup(){
   int xBorder = int(width / 8);
   int yBorder = int(height / 10);
   
-  Group loginGroup = cp5.addGroup("LoginScreen")
+  Group loginGroup = cp5.addGroup("LoginGroup")
                         .setPosition(xBorder, yBorder)
                         .setWidth(width - 2*xBorder)
                         .setBackgroundHeight(height - 2*yBorder)
@@ -122,5 +127,5 @@ Screen MakeLoginScreen(){
                  .setGroup(loginGroup)
                  ;
   
-  return new Screen(loginGroup, "loginScreen");
+  return loginGroup;
 }

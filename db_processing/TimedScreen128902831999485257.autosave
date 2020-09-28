@@ -11,10 +11,6 @@ class TimedGroup{
     time = millis();
     group.show();
   }
-
-  void hide(){
-    group.hide();
-  }
   
   void update(){
     if (group.isVisible()){
@@ -25,7 +21,7 @@ class TimedGroup{
   }
 }
 
-TimedGroup MakeSuccessGroup(){
+TimedScreen MakeSuccessScreen(){
   //Success label
   Group successGroup = cp5.addGroup("SuccessScreen")
                           .setPosition(0, 0)
@@ -43,10 +39,10 @@ TimedGroup MakeSuccessGroup(){
                    .setGroup(successGroup)
                    ;
                    
-  return new TimedGroup(successGroup);
+  return new TimedScreen(successGroup, "successScreen");
 }
 
-TimedGroup MakeWarningGroup(){
+TimedScreen MakeWarningScreen(){
   //Warning label
   Group warningGroup = cp5.addGroup("WarningScreen")
                           .setPosition(0, 0)
@@ -64,5 +60,5 @@ TimedGroup MakeWarningGroup(){
                    .setGroup(warningGroup)
                    ;
                    
-  return new TimedGroup(warningGroup);
+  return new TimedScreen(warningGroup, "warningScreen");
 }
