@@ -3,6 +3,7 @@ void logout(int _){
   //We shift to the login Group
   sessionGroup.hide();
   chatGroup.hide();
+  chatListGroup.hide();
   //HIDE ALL THE CHAT GroupS AND STUFF
   loginGroup.show();
   

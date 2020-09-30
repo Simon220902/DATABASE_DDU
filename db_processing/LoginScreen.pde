@@ -30,11 +30,11 @@ void login(int _){
     
     loginGroup.hide();
     sessionGroup.show();
+    
+    chatListGroup.show();
+    
     chatGroup.show();
     updateChatGroup();
-    chatListGroup.show();
-    updateNewChatGroup();
-    
     
     
     //HERE WE ARE GOING TO GET INTO THE ACTUAL MESSAGING APP WITH THAT USER.
@@ -61,7 +61,7 @@ Group MakeLoginGroup(){
                         .setPosition(xBorder, yBorder)
                         .setWidth(width - 2*xBorder)
                         .setBackgroundHeight(height - 2*yBorder)
-                        .setBackgroundColor(color(200, 155))
+                        .setBackgroundColor(color(200))
                         .hideBar()
                         .hide()
                         ;

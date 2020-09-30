@@ -41,52 +41,6 @@ void send(int _){
   }
 }
 
-  
-  
-
-Group MakeChatListGroup() {
-  xGap = 2 * width/30;
-  yGap = height/10;
-  chooseChatGroupWidth = 8 * width/30;
-  
-  Group chatListGroup = cp5.addGroup("ChatListGroup")
-                        .setPosition(xGap,yGap)
-                        .setWidth(chooseChatGroupWidth)
-                        .setBackgroundHeight(height-2*yGap)
-                        .setBackgroundColor(color(150))
-                        .hideBar()
-                        .hide()
-                        
-                        ;
-  Textlabel clL = cp5.addTextlabel("chatListTitle")
-                        .setPosition(xGroupGap, yGroupGap)
-                        .setText("CHATLISTTITLE")
-                        .setColorValue(color(255))
-                        .setFont(f)
-                        .setGroup(chatListGroup) 
-                        ;
-  
-  ListBox indiChat = cp5.addListBox("ChatList")
-                        .setWidth(chooseChatGroupWidth-xGap)
-                        .setPosition(xGroupGap, yGroupGap + 20)
-
-                        .setGroup(chatListGroup) 
-                        
-                        ;
-                        
-  Button addChat = cp5.addButton("newChat")
-                        .setPosition(chooseChatGroupWidth-xGap,height-2*yGap-yGap)
-                        .setWidth(xGap/2)
-                        .setCaptionLabel("+")
-                        .setGroup(chatListGroup)
-                        ;
-  
-  return chatListGroup;
-}
- 
-
-
-
 Group MakeChatGroup(){
   f = createFont("Times", 15);
   
@@ -131,7 +85,17 @@ Group MakeChatGroup(){
                            .setBarVisible(false)
                            .setGroup(chatGroup)
                            ;
-  
+  ListBox chatList = cp5.addListBox("ChatList")
+                        .setPosition(-xGap-chooseChatGroupWidth+xGroupGap, yMessageList)
+                        .setSize(chooseChatGroupWidth - 2*xGroupGap, messageListHeight)
+                        .setItemHeight(30)
+                        .setColorBackground(color(200))
+                        .setColorActive(color(0))
+                        .setColorForeground(color(150))
+                        .setFont(f)
+                        .setBarVisible(false)
+                        .setGroup(chatGroup)
+                       ;
   int messageInputFieldAndSendButton = chatGroup.getWidth() - 2*xGroupGap;
   Textfield messageInput = cp5.addTextfield("MessageInput")
                               .setPosition(xGroupGap, 2*yGroupGap+cL.getHeight()+messageList.getHeight())
@@ -143,7 +107,6 @@ Group MakeChatGroup(){
                               .setFont(f)
                               .setGroup(chatGroup)
                               ;
-
   Button sB = cp5.addButton("send")
                  .setPosition(xGroupGap + messageInput.getWidth(), 2*yGroupGap+cL.getHeight()+messageList.getHeight())
                  .setSize(messageInputFieldAndSendButton/10, messageInput.getHeight())
@@ -151,23 +114,36 @@ Group MakeChatGroup(){
                  .setColorBackground(color(100))
                  .setGroup(chatGroup)
                  ;
-  
   return chatGroup;
 }
 
 //Call when sessions chattable has been updated.
 void updateChatGroup(){
   ListBox messageList = cp5.get(ListBox.class, "MessageList");
+  ListBox chatList = cp5.get(ListBox.class, "ChatList");
+  
   if(session.currentChatTable != null){
     //Alternatively find a way to delete all of the items in the ListBox.
     messageList.clear();
     //SQL QUERY
     db.query("SELECT * FROM " + session.currentChatTable + ";");
-  
+    
     //RUNNING THROUGH EACH OF THE RESULTS
     int i = 0;
     while(db.next()){
         messageList.addItem(str(db.getInt("UserID"))+": "+db.getString("Message"), i);
+        i++;
+    }
+    
+    println("sASFSDFSDFGSFSDFSDFSDF");
+    chatList.clear();
+    db.query("SELECT * FROM CHATS WHERE UserID1 = " + str(session.currentUserID) + " OR UserID2 = " + str(session.currentUserID) + ";");
+    //RUNNING THROUGH EACH OF THE RESULTS
+    i = 0;
+    while(db.next()){
+      String chatname = db.getString("ChatTableName");
+        //messageList.addItem(str(db.getInt("UserID"))+": "+db.getString("Message"), i);
+        chatList.addItem(chatname, i);
         i++;
     }
   }else{
@@ -181,5 +157,10 @@ void updateChatGroup(){
     messageList.setHeight(messageList.getItems().size()*30);
   }else{
     messageList.setHeight(messageListHeight);    
+  }
+  if(chatList.getItems().size()*30<messageListHeight){
+    chatList.setHeight(chatList.getItems().size()*30);
+  }else{
+    chatList.setHeight(messageListHeight);    
   }
 }
