@@ -1,6 +1,8 @@
 class Session{
   int currentUserID;
   String currentUser;
+  //The username of the UserID2 in the current chattable.
+  String currentUser2;
   String currentChatTable;
   String currentKey;
   
@@ -11,8 +13,17 @@ class Session{
   
   void updateChat(String newChatTable){
     currentChatTable = newChatTable;
-    db.query( "SELECT EncryptionKey FROM CHATS WHERE ChatTableName = "+newChatTable+";");
-    updateChatGroup();
+    if(db.connect()){
+      db.query( "SELECT * FROM CHATS WHERE ChatTableName = '"+newChatTable+"';");
+      db.next();
+      currentKey = db.getString("EncryptionKey");
+      int UserID1 = db.getInt("UserID1");
+      int UserID2 = db.getInt("UserID2");
+      db.query( "SELECT UserName FROM USERS WHERE (UserID = " + str(UserID1) + " OR UserId = " + str(UserID2) + " ) AND UserID != "+currentUserID+";");
+      db.next();
+      currentUser2 = db.getString("UserName");
+      updateChatGroup();
+    }
   }
   
   void pickChat(){
@@ -20,12 +31,11 @@ class Session{
     db.query( "SELECT * FROM CHATS WHERE UserID1 = "+str(currentUserID)+" OR UserID2 = "+str(currentUserID)+";");
     db.next();
     String newChatTable = db.getString("ChatTableName");
-    String newKey = db.getString("EncryptionKey");
-    if (newChatTable != null && newKey != null){
-      currentChatTable = newChatTable;
-      currentKey = newKey;
+    if (newChatTable != null){
+      updateChat(newChatTable);
     }else{
       //Give some warning message
+      
     }
   }
   

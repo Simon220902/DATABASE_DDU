@@ -156,7 +156,11 @@ void updateChatGroup() {
       while (db.next()) {
         String encryptedMessage = db.getString("Message");
         String decryptedMessage = new String(cipher.doFinal(Base64.getDecoder().decode(encryptedMessage)));
-        messageList.addItem(str(db.getInt("UserID"))+": " + decryptedMessage, i);
+        if(db.getInt("UserID") == session.currentUserID){
+          messageList.addItem(session.currentUser+": " + decryptedMessage, i);
+        }else{
+          messageList.addItem(session.currentUser2+": " + decryptedMessage, i);
+        }
         i++;
       }
     }catch(Exception e){
