@@ -1,26 +1,26 @@
+String myKey = "BF3D4300EAD45FA669";
 void login(int _) {
   //We need to get the password for the username if it is not the right password we need to do something something:___::_::_:;::?#€&%&#€%#€%#€%
   String username = cp5.get(Textfield.class, "username").getText();
   String password = cp5.get(Textfield.class, "password").getText();
-
   try {
-    String myKey = "password";    
-    byte[] key = myKey.getBytes("UTF-8");
-    MessageDigest sha = MessageDigest.getInstance("SHA-1");
-    key = sha.digest(key);
-    key = Arrays.copyOf(key, 16);
-    SecretKeySpec secretKey = new SecretKeySpec(key, "AES");
-
-    Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-    cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-    password = Base64.getEncoder().encodeToString(cipher.doFinal(password.getBytes("UTF-8")));
-    println(password);
-  }
-
-  catch(Exception e) {
-  }
-
-
+        //Vha. MessageDigest kan vi anvende en hashing algoritme.... her SHA-256 ...
+        //prøv f.eks. MD-5 og se om du kan bryde den ved at søge på nettet!
+        MessageDigest md = MessageDigest.getInstance("SHA-256");         
+        //MassageDigest objektet "fodres" med teksten, der skal "hashes"
+        md.update(password.getBytes());    
+        //digest funktionen giver "hash-værdien", men i hexadecimale bytes 
+        byte[] byteList = md.digest();
+        //Her anvendes processings hex funktion, der kan konvertere hexadecimale bytes til Strings
+        //så det er muligt at læse "hash-værdien"
+        StringBuffer hashedValueBuffer = new StringBuffer();
+        for (byte b : byteList)hashedValueBuffer.append(hex(b)); 
+        //We insert the new user and save the change to the data base
+        password = hashedValueBuffer.toString();
+      }
+  catch (Exception e) {
+        System.out.println("Exception: "+e);
+      }
 
   db.query( "SELECT * FROM USERS WHERE UserName = '"+username+"';");
   db.next();

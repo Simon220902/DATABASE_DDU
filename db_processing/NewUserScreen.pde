@@ -1,8 +1,3 @@
-import javax.crypto.*; 
-import java.security.*;
-import java.util.Arrays;
-import java.util.Base64;
-
 void createNewUser(int _) {
   String username = cp5.get(Textfield.class, "New username").getText();
   String password1 = cp5.get(Textfield.class, "New password").getText();
@@ -21,38 +16,25 @@ void createNewUser(int _) {
     String u = db.getString("UserName");
     if (u == null) {
 
-      //incryption of password before reaching database.
-
-      String myKey = "password";
-      String pass = password1;
-      //key is made
       try {
-        byte[] key = myKey.getBytes("UTF-8");
-        MessageDigest sha = MessageDigest.getInstance("SHA-1");
-        key = sha.digest(key);
-        key = Arrays.copyOf(key, 16);
-        SecretKeySpec secretKey = new SecretKeySpec(key, "AES");
-
-        //performing incryption
-        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-        String passwordIncrypted = Base64.getEncoder().encodeToString(cipher.doFinal(pass.getBytes("UTF-8")));
+        //Vha. MessageDigest kan vi anvende en hashing algoritme.... her SHA-256 ...
+        //prøv f.eks. MD-5 og se om du kan bryde den ved at søge på nettet!
+        MessageDigest md = MessageDigest.getInstance("SHA-256");         
+        //MassageDigest objektet "fodres" med teksten, der skal "hashes"
+        md.update(password1.getBytes());    
+        //digest funktionen giver "hash-værdien", men i hexadecimale bytes 
+        byte[] byteList = md.digest();
+        //Her anvendes processings hex funktion, der kan konvertere hexadecimale bytes til Strings
+        //så det er muligt at læse "hash-værdien"
+        StringBuffer hashedValueBuffer = new StringBuffer();
+        for (byte b : byteList)hashedValueBuffer.append(hex(b)); 
         //We insert the new user and save the change to the data base
-        db.execute("INSERT INTO Users (UserName, Password) VALUES ('" + username + "', '" + passwordIncrypted + "');");
-        println("passbfinc: "+password1);
-        println("passInc: "+passwordIncrypted);
-        
-        //decryption for testing 
-        cipher.init(Cipher.DECRYPT_MODE, secretKey);
-        String beskedDekrypteret =  new String(cipher.doFinal(Base64.getDecoder().decode(passwordIncrypted)));
-        println("password: "+beskedDekrypteret);
+        db.execute("INSERT INTO Users (UserName, Password) VALUES ('" + username + "', '" + hashedValueBuffer.toString() + "');");
         
       }
-      catch(Exception e) {
-        
-        
+      catch (Exception e) {
+        System.out.println("Exception: "+e);
       }
-
       //We show the successlabel
       Textlabel s = cp5.get(Textlabel.class, "success");
       s.setText("New user created");

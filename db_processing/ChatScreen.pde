@@ -20,41 +20,35 @@ void MessageInput(String _) {
 
 void send(int _) {
   if (session.currentChatTable != null) {
-    String message = cp5.get(Textfield.class, "MessageInput").getText(); 
-
-    
-    //The message is incrypted before being sent
-    try {
-      String myKey = "password";    
-      byte[] key = myKey.getBytes("UTF-8");
+    String message = cp5.get(Textfield.class, "MessageInput").getText();
+    String userID = str(session.currentUserID);
+    String messageEncrypted = "";
+    try{
+      byte[] key = session.currentKey.getBytes("UTF-8");
       MessageDigest sha = MessageDigest.getInstance("SHA-1");
       key = sha.digest(key);
-      key = Arrays.copyOf(key, 16);
+      key = Arrays.copyOf(key, 16); 
       SecretKeySpec secretKey = new SecretKeySpec(key, "AES");
-
+      
+      
+      //sådan kan man "kryptere"
       Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
       cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-      message = Base64.getEncoder().encodeToString(cipher.doFinal(message.getBytes("UTF-8")));
-      println(message);
+      messageEncrypted = Base64.getEncoder().encodeToString(cipher.doFinal(message.getBytes("UTF-8")));
+    }catch(Exception e){
+      println("!!!EXCEPTION!!!:",e);
     }
-
-    catch(Exception e) {
-    }
-    
-
-
-    String userID = str(session.currentUserID);
-    db.execute("INSERT INTO " + session.currentChatTable + "(Message, Time, UserID) VALUES "+"('"+message+"', datetime('now','localtime'),"+ userID +");");
-    cp5.get(Textfield.class, "MessageInput").setText("");
-    //Instead we should do the following:
-    ListBox messageList = cp5.get(ListBox.class, "MessageList");
-    messageList.addItem(userID+": "+message, messageList.getItems().size());
-    //Updates the height to dodge java.lang.IndexOutOfBoundsException, that comes when clicking in the messageList, where there is no items
-    if (messageList.getItems().size()*30<messageListHeight) {
-      messageList.setHeight(messageList.getItems().size()*30);
-    } else {
-      messageList.setHeight(messageListHeight);
-    }
+  db.execute("INSERT INTO " + session.currentChatTable + "(Message, Time, UserID) VALUES "+"('"+messageEncrypted+"', datetime('now','localtime'),"+ userID +");");
+  cp5.get(Textfield.class, "MessageInput").setText("");
+  //We update the list of messages
+  ListBox messageList = cp5.get(ListBox.class, "MessageList");
+  messageList.addItem(userID+": "+message, messageList.getItems().size());
+  //Updates the height to dodge java.lang.IndexOutOfBoundsException, that comes when clicking in the messageList, where there is no items
+  if (messageList.getItems().size()*30<messageListHeight) {
+    messageList.setHeight(messageList.getItems().size()*30);
+  } else {
+    messageList.setHeight(messageListHeight);
+  }
   } else {
     Textlabel w = cp5.get(Textlabel.class, "warning");
     w.setText("You have to be in a chat to send a message.");
@@ -149,17 +143,30 @@ void updateChatGroup() {
     messageList.clear();
     //SQL QUERY
     db.query("SELECT * FROM " + session.currentChatTable + ";");
-    
-    //RUNNING THROUGH EACH OF THE RESULTS
-    int i = 0;
-    while (db.next()) {
-      messageList.addItem(str(db.getInt("UserID"))+": "+db.getString("Message"), i);
-      i++;
+    try{
+      byte[] key = session.currentKey.getBytes("UTF-8");
+      MessageDigest sha = MessageDigest.getInstance("SHA-1");
+      key = sha.digest(key);
+      key = Arrays.copyOf(key, 16); 
+      SecretKeySpec secretKey = new SecretKeySpec(key, "AES");
+      Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+      cipher.init(Cipher.DECRYPT_MODE, secretKey);
+      //RUNNING THROUGH EACH OF THE RESULTS
+      int i = 0;
+      while (db.next()) {
+        String encryptedMessage = db.getString("Message");
+        String decryptedMessage = new String(cipher.doFinal(Base64.getDecoder().decode(encryptedMessage)));
+        messageList.addItem(str(db.getInt("UserID"))+": " + decryptedMessage, i);
+        i++;
+      }
+    }catch(Exception e){
+      println("!!exception!!:",e);
     }
+    
     chatList.clear();
     db.query("SELECT * FROM CHATS WHERE UserID1 = " + str(session.currentUserID) + " OR UserID2 = " + str(session.currentUserID) + ";");
     //RUNNING THROUGH EACH OF THE RESULTS
-    i = 0;
+    int i = 0;
     while(db.next()){
       String chatname = db.getString("ChatTableName");
         //messageList.addItem(str(db.getInt("UserID"))+": "+db.getString("Message"), i);
