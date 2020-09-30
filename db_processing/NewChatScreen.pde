@@ -39,8 +39,6 @@ Group MakeNewChatGroup(){
                            .setBarVisible(false)
                            .setGroup(newChatGroup)
                            ;
-  usersList.addItem("FIRST ITEM!", 0);
-  usersList.addItem("SECOND ITEM!", 1);
   
   Button bB = cp5.addButton("back")
                  .setPosition(xGroupGap, yUsersList + usersList.getHeight() + yGroupGap)
@@ -59,10 +57,8 @@ void updateNewChatGroup(){
   usersList.clear();
   //We do the query of which users in USERS that the currentUserID doesn't have any chats with (we do a longer compare with the chatstable (both userID1 and 2))
   db.query("SELECT * FROM USERS WHERE (UserID NOT IN (SELECT UserID1 FROM CHATS WHERE UserID2=" + str(session.currentUserID) + ")) AND (UserID NOT IN (SELECT UserID2 FROM CHATS WHERE UserID1=" + str(session.currentUserID) + ")) AND UserID != " + str(session.currentUserID) + ";");
-  int i = 0;
   while(db.next()){
     usersList.addItem(db.getString("UserName"),db.getInt("UserID"));
-    i++;
   }
   //We update the height, the itemheight being 30.
   usersList.setHeight(usersList.getItems().size()*30) ;
@@ -89,7 +85,6 @@ void controlEventNewChatGroup(ControlEvent theEvent) {
       db.execute("INSERT INTO CHATS (ChatTableName, UserID1, UserID2) VALUES ('" + newChatName +  "', " + str(session.currentUserID) + ", " + str(chosenUserID) + ");");
       //Set this new chattable as the sessions chattable
       session.updateChat(newChatName);
-      //updateChatListGroup();
       //Give a success message and return to the chat Groups.
       Textlabel s = cp5.get(Textlabel.class, "success");
       s.setText("Created a chat with "+ chosenUsername + " called " + newChatName);
@@ -97,14 +92,15 @@ void controlEventNewChatGroup(ControlEvent theEvent) {
       successGroup.show();
       //Returning to the chat
       newChatGroup.hide();
-      //chatListGroup.group.show();
+      chatListGroup.show();
       chatGroup.show();
+      updateChatGroup();
     }
   }
 }
 
 void back(int _){
   newChatGroup.hide();
-  //chatListGroup.group.show();
+  chatListGroup.show();
   chatGroup.show();
 }

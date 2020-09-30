@@ -1,35 +1,40 @@
-
-//THIS IS READY FOR THE Group JUST CALL THE LIST CHATLIST AND BUTTON newChat
 int chatListHeight; //SET THE VALUE OF THIS VARIABLE IN THE MakeNewChatListGroup function!!!!!!!!!!!!!!!!!!!
 
-void updateChatListGroup(){
-  ListBox chatList = cp5.get(ListBox.class, "ChatList");
-  if(session.currentChatTable != null){
-    chatList.clear();
-    //SQL QUERY
-    db.query("SELECT * FROM CHATS WHERE UserID1 = " + str(session.currentUserID) + " OR UserID2 = " + str(session.currentUserID) + ";");
-    //RUNNING THROUGH EACH OF THE RESULTS
-    int i = 0;
-    while(db.next()){
-        chatList.addItem(db.getString("ChatTableName"), i);
-        i++;
-    }
-  }else{
-    Textlabel w = cp5.get(Textlabel.class, "warning");
-    w.setText("You don't have any chats, click on the button to create one.");
-    successGroup.hide();
-    warningGroup.show();
-  }
-  //Updates the height to dodge java.lang.IndexOutOfBoundsException, that comes when clicking in the messageList, where there are no items
-  if(chatList.getItems().size()*30<chatListHeight){
-    chatList.setHeight(chatList.getItems().size()*30);
-  }else{
-    chatList.setHeight(chatListHeight);    
-  }
+Group MakeChatListGroup() {
+  xGap = 2 * width/30;
+  yGap = height/10;
+  chooseChatGroupWidth = 8 * width/30;
+  
+  Group chatListGroup = cp5.addGroup("ChatListGroup")
+                        .setPosition(xGap,yGap)
+                        .setWidth(chooseChatGroupWidth)
+                        .setBackgroundHeight(height-2*yGap)
+                        .setBackgroundColor(color(150, 0))
+                        .hideBar()
+                        .hide()
+                        ;
+  Textlabel clL = cp5.addTextlabel("chatListTitle")
+                        .setPosition(xGroupGap, yGroupGap)
+                        .setText("Chat list")
+                        .setColorValue(color(255))
+                        .setFont(f)
+                        .setGroup(chatListGroup) 
+                        ;
+  Button addChat = cp5.addButton("newChat")
+                        .setPosition(xGroupGap,height-2*yGap-yGap)
+                        .setWidth(chatListGroup.getWidth()-2*yGap)
+                        .setSize(chooseChatGroupWidth-2*xGroupGap, 1*(chatListTextfieldHeight/16))
+                        .setCaptionLabel("Make a new chat")
+                        .setColorBackground(color(100))
+                        .setFont(f)
+                        .setGroup(chatListGroup)
+                        ;
+  return chatListGroup;
 }
 
 void newChat(){
   newChatGroup.show();
+  updateNewChatGroup();
   chatListGroup.hide();
   chatGroup.hide();
 }
@@ -53,5 +58,4 @@ void controlEventChatListGroup(ControlEvent theEvent) {
       warningGroup.group.hide();
       successGroup.show();
     }
-  }
-}
+  }}

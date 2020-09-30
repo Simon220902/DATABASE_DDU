@@ -49,13 +49,13 @@ void login(int _) {
 
     loginGroup.hide();
     sessionGroup.show();
+    
+    chatListGroup.show();
+    
     chatGroup.show();
     updateChatGroup();
-    chatListGroup.show();
-    updateNewChatGroup();
-
-
-
+    
+    
     //HERE WE ARE GOING TO GET INTO THE ACTUAL MESSAGING APP WITH THAT USER.
   } else {
     Textlabel w = cp5.get(Textlabel.class, "warning");
@@ -77,14 +77,14 @@ Group MakeLoginGroup() {
   int yBorder = int(height / 10);
 
   Group loginGroup = cp5.addGroup("LoginGroup")
-    .setPosition(xBorder, yBorder)
-    .setWidth(width - 2*xBorder)
-    .setBackgroundHeight(height - 2*yBorder)
-    .setBackgroundColor(color(200, 155))
-    .hideBar()
-    .hide()
-    ;
-
+                        .setPosition(xBorder, yBorder)
+                        .setWidth(width - 2*xBorder)
+                        .setBackgroundHeight(height - 2*yBorder)
+                        .setBackgroundColor(color(200))
+                        .hideBar()
+                        .hide()
+                        ;
+  
   int xGroupBorder = loginGroup.getWidth() / 8;
   int yGroupBorder = loginGroup.getBackgroundHeight() / 10;
   int yGap = yGroupBorder; //This value probably needs to be changed
