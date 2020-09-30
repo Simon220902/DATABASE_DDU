@@ -2,6 +2,7 @@ class Session{
   int currentUserID;
   String currentUser;
   String currentChatTable;
+  String currentKey;
   
   void updateUser(int newUserID, String newUser){
     currentUserID = newUserID;
@@ -10,6 +11,7 @@ class Session{
   
   void updateChat(String newChatTable){
     currentChatTable = newChatTable;
+    db.query( "SELECT EncryptionKey FROM CHATS WHERE ChatTableName = "+newChatTable+";");
     updateChatGroup();
   }
   
@@ -18,8 +20,12 @@ class Session{
     db.query( "SELECT * FROM CHATS WHERE UserID1 = "+str(currentUserID)+" OR UserID2 = "+str(currentUserID)+";");
     db.next();
     String newChatTable = db.getString("ChatTableName");
-    if (newChatTable != null){
+    String newKey = db.getString("EncryptionKey");
+    if (newChatTable != null && newKey != null){
       currentChatTable = newChatTable;
+      currentKey = newKey;
+    }else{
+      //Give some warning message
     }
   }
   

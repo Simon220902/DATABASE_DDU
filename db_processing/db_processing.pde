@@ -1,5 +1,10 @@
 import de.bezier.data.sql.*;
 import controlP5.*;
+import javax.crypto.*; 
+import java.security.*;
+import java.util.Arrays;
+import java.util.Base64;
+import java.security.*;
 
 ControlP5 cp5;
 

@@ -14,26 +14,42 @@ int messageListHeight;
 
 PFont f;
 
-void MessageInput(String _){
+void MessageInput(String _) {
   send(0);
 }
 
-void send(int _){
-  if(session.currentChatTable != null){
-    String message = cp5.get(Textfield.class, "MessageInput").getText(); 
+void send(int _) {
+  if (session.currentChatTable != null) {
+    String message = cp5.get(Textfield.class, "MessageInput").getText();
     String userID = str(session.currentUserID);
-    db.execute("INSERT INTO " + session.currentChatTable + "(Message, Time, UserID) VALUES "+"('"+message+"', datetime('now','localtime'),"+ userID +");");
-    cp5.get(Textfield.class, "MessageInput").setText("");
-    //Instead we should do the following:
-    ListBox messageList = cp5.get(ListBox.class, "MessageList");
-    messageList.addItem(userID+": "+message,messageList.getItems().size());
-    //Updates the height to dodge java.lang.IndexOutOfBoundsException, that comes when clicking in the messageList, where there is no items
-    if(messageList.getItems().size()*30<messageListHeight){
-      messageList.setHeight(messageList.getItems().size()*30);
-    }else{
-      messageList.setHeight(messageListHeight);    
+    String messageEncrypted = "";
+    try{
+      byte[] key = session.currentKey.getBytes("UTF-8");
+      MessageDigest sha = MessageDigest.getInstance("SHA-1");
+      key = sha.digest(key);
+      key = Arrays.copyOf(key, 16); 
+      SecretKeySpec secretKey = new SecretKeySpec(key, "AES");
+      
+      
+      //sådan kan man "kryptere"
+      Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+      cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+      messageEncrypted = Base64.getEncoder().encodeToString(cipher.doFinal(message.getBytes("UTF-8")));
+    }catch(Exception e){
+      println("!!!EXCEPTION!!!:",e);
     }
-  }else{
+  db.execute("INSERT INTO " + session.currentChatTable + "(Message, Time, UserID) VALUES "+"('"+messageEncrypted+"', datetime('now','localtime'),"+ userID +");");
+  cp5.get(Textfield.class, "MessageInput").setText("");
+  //We update the list of messages
+  ListBox messageList = cp5.get(ListBox.class, "MessageList");
+  messageList.addItem(userID+": "+message, messageList.getItems().size());
+  //Updates the height to dodge java.lang.IndexOutOfBoundsException, that comes when clicking in the messageList, where there is no items
+  if (messageList.getItems().size()*30<messageListHeight) {
+    messageList.setHeight(messageList.getItems().size()*30);
+  } else {
+    messageList.setHeight(messageListHeight);
+  }
+  } else {
     Textlabel w = cp5.get(Textlabel.class, "warning");
     w.setText("You have to be in a chat to send a message.");
     successGroup.hide();
@@ -43,37 +59,37 @@ void send(int _){
 
 Group MakeChatGroup(){
   f = createFont("Times", 15);
-  
+
   xGap = 2 * width/30;
   yGap = height/10;
 
   chooseChatGroupWidth = 8 * width/30;
   chatGroupWidth = 16 * width/30;
-  
+
   Group chatGroup = cp5.addGroup("ChatGroup")
-                       .setPosition(2*xGap+chooseChatGroupWidth, yGap)
-                       .setWidth(chatGroupWidth)
-                       .setBackgroundHeight(height-2*yGap)
-                       .setBackgroundColor(color(150))
-                       .hideBar()
-                       .hide()
-                       ;
+    .setPosition(2*xGap+chooseChatGroupWidth, yGap)
+    .setWidth(chatGroupWidth)
+    .setBackgroundHeight(height-2*yGap)
+    .setBackgroundColor(color(150))
+    .hideBar()
+    .hide()
+    ;
   yGroupGap = chatGroup.getBackgroundHeight()/15;
   xGroupGap = chatGroup.getWidth()/15;
-  
+
   Textlabel cL = cp5.addTextlabel("chatTitle")
-                   .setPosition(xGroupGap, yGroupGap)
-                   .setText("CHATTABLETITLE")
-                   .setColorValue(color(255))
-                   .setFont(f)
-                   .setGroup(chatGroup)
-                   ;
+    .setPosition(xGroupGap, yGroupGap)
+    .setText("CHATTABLETITLE")
+    .setColorValue(color(255))
+    .setFont(f)
+    .setGroup(chatGroup)
+    ;
 
   chatListTextfieldHeight = chatGroup.getBackgroundHeight() - 3*yGroupGap - cL.getHeight();
   yMessageList = yGroupGap+cL.getHeight();
   messageListHeight = 15*(chatListTextfieldHeight/16);
-  
-  
+
+
   ListBox messageList = cp5.addListBox("MessageList")
                            .setPosition(xGroupGap, yMessageList)
                            .setSize(chatGroup.getWidth() - 2*xGroupGap, messageListHeight)
@@ -118,7 +134,7 @@ Group MakeChatGroup(){
 }
 
 //Call when sessions chattable has been updated.
-void updateChatGroup(){
+void updateChatGroup() {
   ListBox messageList = cp5.get(ListBox.class, "MessageList");
   ListBox chatList = cp5.get(ListBox.class, "ChatList");
   
@@ -127,17 +143,30 @@ void updateChatGroup(){
     messageList.clear();
     //SQL QUERY
     db.query("SELECT * FROM " + session.currentChatTable + ";");
-    
-    //RUNNING THROUGH EACH OF THE RESULTS
-    int i = 0;
-    while(db.next()){
-        messageList.addItem(str(db.getInt("UserID"))+": "+db.getString("Message"), i);
+    try{
+      byte[] key = session.currentKey.getBytes("UTF-8");
+      MessageDigest sha = MessageDigest.getInstance("SHA-1");
+      key = sha.digest(key);
+      key = Arrays.copyOf(key, 16); 
+      SecretKeySpec secretKey = new SecretKeySpec(key, "AES");
+      Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+      cipher.init(Cipher.DECRYPT_MODE, secretKey);
+      //RUNNING THROUGH EACH OF THE RESULTS
+      int i = 0;
+      while (db.next()) {
+        String encryptedMessage = db.getString("Message");
+        String decryptedMessage = new String(cipher.doFinal(Base64.getDecoder().decode(encryptedMessage)));
+        messageList.addItem(str(db.getInt("UserID"))+": " + decryptedMessage, i);
         i++;
+      }
+    }catch(Exception e){
+      println("!!exception!!:",e);
     }
+    
     chatList.clear();
     db.query("SELECT * FROM CHATS WHERE UserID1 = " + str(session.currentUserID) + " OR UserID2 = " + str(session.currentUserID) + ";");
     //RUNNING THROUGH EACH OF THE RESULTS
-    i = 0;
+    int i = 0;
     while(db.next()){
       String chatname = db.getString("ChatTableName");
         //messageList.addItem(str(db.getInt("UserID"))+": "+db.getString("Message"), i);
@@ -151,10 +180,10 @@ void updateChatGroup(){
     warningGroup.show();
   }
   //Updates the height to dodge java.lang.IndexOutOfBoundsException, that comes when clicking in the messageList, where there is no items
-  if(messageList.getItems().size()*30<messageListHeight){
+  if (messageList.getItems().size()*30<messageListHeight) {
     messageList.setHeight(messageList.getItems().size()*30);
-  }else{
-    messageList.setHeight(messageListHeight);    
+  } else {
+    messageList.setHeight(messageListHeight);
   }
   if(chatList.getItems().size()*30<messageListHeight){
     chatList.setHeight(chatList.getItems().size()*30);

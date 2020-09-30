@@ -79,10 +79,15 @@ void controlEventNewChatGroup(ControlEvent theEvent) {
       println("THE TEXT OF THE ACTIVE ENTRY: ", chosenUsername);
       //Here we should create a new chattable with the user at the active index and add it to the CHATS table
       String newChatName = "Chat"+str(session.currentUserID)+str(chosenUserID);
+      //WE SHOULD PROBABLY DO THIS IN A BETTER WAY
+      String newEncryptionKey = "";
+      for (int i = 0; i < 10; i++){
+        newEncryptionKey += str(random(-200,400)*i);
+      }
       //Creating the new chat table
       db.execute("CREATE TABLE " + newChatName + " ( MessageID INTEGER PRIMARY KEY AUTOINCREMENT, Message TEXT NOT NULL, Time TEXT, UserID INT NOT NULL);");
       //Adding this to the CHATS table
-      db.execute("INSERT INTO CHATS (ChatTableName, UserID1, UserID2) VALUES ('" + newChatName +  "', " + str(session.currentUserID) + ", " + str(chosenUserID) + ");");
+      db.execute("INSERT INTO CHATS (ChatTableName, EncryptionKey, UserID1, UserID2) VALUES ('" + newChatName +  "', '" + newEncryptionKey + "', " + str(session.currentUserID) + ", " + str(chosenUserID) + ");");
       //Set this new chattable as the sessions chattable
       session.updateChat(newChatName);
       //Give a success message and return to the chat Groups.
