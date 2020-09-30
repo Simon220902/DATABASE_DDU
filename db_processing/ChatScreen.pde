@@ -134,8 +134,6 @@ void updateChatGroup(){
         messageList.addItem(str(db.getInt("UserID"))+": "+db.getString("Message"), i);
         i++;
     }
-    
-    println("sASFSDFSDFGSFSDFSDFSDF");
     chatList.clear();
     db.query("SELECT * FROM CHATS WHERE UserID1 = " + str(session.currentUserID) + " OR UserID2 = " + str(session.currentUserID) + ";");
     //RUNNING THROUGH EACH OF THE RESULTS
