@@ -14,26 +14,48 @@ int messageListHeight;
 
 PFont f;
 
-void MessageInput(String _){
+void MessageInput(String _) {
   send(0);
 }
 
-void send(int _){
-  if(session.currentChatTable != null){
+void send(int _) {
+  if (session.currentChatTable != null) {
     String message = cp5.get(Textfield.class, "MessageInput").getText(); 
+
+    /*
+    //The message is incrypted before being sent
+    try {
+      String myKey = "password";    
+      byte[] key = myKey.getBytes("UTF-8");
+      MessageDigest sha = MessageDigest.getInstance("SHA-1");
+      key = sha.digest(key);
+      key = Arrays.copyOf(key, 16);
+      SecretKeySpec secretKey = new SecretKeySpec(key, "AES");
+
+      Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+      cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+      message = Base64.getEncoder().encodeToString(cipher.doFinal(message.getBytes("UTF-8")));
+      println(message);
+    }
+
+    catch(Exception e) {
+    }
+    */
+
+
     String userID = str(session.currentUserID);
     db.execute("INSERT INTO " + session.currentChatTable + "(Message, Time, UserID) VALUES "+"('"+message+"', datetime('now','localtime'),"+ userID +");");
     cp5.get(Textfield.class, "MessageInput").setText("");
     //Instead we should do the following:
     ListBox messageList = cp5.get(ListBox.class, "MessageList");
-    messageList.addItem(userID+": "+message,messageList.getItems().size());
+    messageList.addItem(userID+": "+message, messageList.getItems().size());
     //Updates the height to dodge java.lang.IndexOutOfBoundsException, that comes when clicking in the messageList, where there is no items
-    if(messageList.getItems().size()*30<messageListHeight){
+    if (messageList.getItems().size()*30<messageListHeight) {
       messageList.setHeight(messageList.getItems().size()*30);
-    }else{
-      messageList.setHeight(messageListHeight);    
+    } else {
+      messageList.setHeight(messageListHeight);
     }
-  }else{
+  } else {
     Textlabel w = cp5.get(Textlabel.class, "warning");
     w.setText("You have to be in a chat to send a message.");
     successGroup.hide();
@@ -41,145 +63,143 @@ void send(int _){
   }
 }
 
-  
-  
+
+
 
 Group MakeChatListGroup() {
   xGap = 2 * width/30;
   yGap = height/10;
   chooseChatGroupWidth = 8 * width/30;
-  
-  Group chatListGroup = cp5.addGroup("ChatListGroup")
-                        .setPosition(xGap,yGap)
-                        .setWidth(chooseChatGroupWidth)
-                        .setBackgroundHeight(height-2*yGap)
-                        .setBackgroundColor(color(150))
-                        .hideBar()
-                        .hide()
-                        
-                        ;
-  Textlabel clL = cp5.addTextlabel("chatListTitle")
-                        .setPosition(xGroupGap, yGroupGap)
-                        .setText("CHATLISTTITLE")
-                        .setColorValue(color(255))
-                        .setFont(f)
-                        .setGroup(chatListGroup) 
-                        ;
-  
-  ListBox indiChat = cp5.addListBox("ChatList")
-                        .setWidth(chooseChatGroupWidth-xGap)
-                        .setPosition(xGroupGap, yGroupGap + 20)
 
-                        .setGroup(chatListGroup) 
-                        
-                        ;
-                        
+  Group chatListGroup = cp5.addGroup("ChatListGroup")
+    .setPosition(xGap, yGap)
+    .setWidth(chooseChatGroupWidth)
+    .setBackgroundHeight(height-2*yGap)
+    .setBackgroundColor(color(150))
+    .hideBar()
+    .hide()
+
+    ;
+  Textlabel clL = cp5.addTextlabel("chatListTitle")
+    .setPosition(xGroupGap, yGroupGap)
+    .setText("CHATLISTTITLE")
+    .setColorValue(color(255))
+    .setFont(f)
+    .setGroup(chatListGroup) 
+    ;
+
+  ListBox indiChat = cp5.addListBox("ChatList")
+    .setWidth(chooseChatGroupWidth-xGap)
+    .setPosition(xGroupGap, yGroupGap + 20)
+    .setGroup(chatListGroup)  
+    ;
+
   Button addChat = cp5.addButton("newChat")
-                        .setPosition(chooseChatGroupWidth-xGap,height-2*yGap-yGap)
-                        .setWidth(xGap/2)
-                        .setCaptionLabel("+")
-                        .setGroup(chatListGroup)
-                        ;
-  
+    .setPosition(chooseChatGroupWidth-xGap, height-2*yGap-yGap)
+    .setWidth(xGap/2)
+    .setCaptionLabel("+")
+    .setGroup(chatListGroup)
+    ;
+
   return chatListGroup;
 }
- 
 
 
 
-Group MakeChatGroup(){
+
+Group MakeChatGroup() {
   f = createFont("Times", 15);
-  
+
   xGap = 2 * width/30;
   yGap = height/10;
 
   chooseChatGroupWidth = 8 * width/30;
   chatGroupWidth = 16 * width/30;
-  
+
   Group chatGroup = cp5.addGroup("ChatGroup")
-                       .setPosition(2*xGap+chooseChatGroupWidth, yGap)
-                       .setWidth(chatGroupWidth)
-                       .setBackgroundHeight(height-2*yGap)
-                       .setBackgroundColor(color(150))
-                       .hideBar()
-                       .hide()
-                       ;
+    .setPosition(2*xGap+chooseChatGroupWidth, yGap)
+    .setWidth(chatGroupWidth)
+    .setBackgroundHeight(height-2*yGap)
+    .setBackgroundColor(color(150))
+    .hideBar()
+    .hide()
+    ;
   yGroupGap = chatGroup.getBackgroundHeight()/15;
   xGroupGap = chatGroup.getWidth()/15;
-  
+
   Textlabel cL = cp5.addTextlabel("chatTitle")
-                   .setPosition(xGroupGap, yGroupGap)
-                   .setText("CHATTABLETITLE")
-                   .setColorValue(color(255))
-                   .setFont(f)
-                   .setGroup(chatGroup)
-                   ;
+    .setPosition(xGroupGap, yGroupGap)
+    .setText("CHATTABLETITLE")
+    .setColorValue(color(255))
+    .setFont(f)
+    .setGroup(chatGroup)
+    ;
 
   chatListTextfieldHeight = chatGroup.getBackgroundHeight() - 3*yGroupGap - cL.getHeight();
   yMessageList = yGroupGap+cL.getHeight();
   messageListHeight = 15*(chatListTextfieldHeight/16);
-  
-  
+
+
   ListBox messageList = cp5.addListBox("MessageList")
-                           .setPosition(xGroupGap, yMessageList)
-                           .setSize(chatGroup.getWidth() - 2*xGroupGap, messageListHeight)
-                           .setItemHeight(30)
-                           .setColorBackground(color(200))
-                           .setColorActive(color(200))
-                           .setColorForeground(color(200))
-                           .setFont(f)
-                           .setBarVisible(false)
-                           .setGroup(chatGroup)
-                           ;
-  
+    .setPosition(xGroupGap, yMessageList)
+    .setSize(chatGroup.getWidth() - 2*xGroupGap, messageListHeight)
+    .setItemHeight(30)
+    .setColorBackground(color(200))
+    .setColorActive(color(200))
+    .setColorForeground(color(200))
+    .setFont(f)
+    .setBarVisible(false)
+    .setGroup(chatGroup)
+    ;
+
   int messageInputFieldAndSendButton = chatGroup.getWidth() - 2*xGroupGap;
   Textfield messageInput = cp5.addTextfield("MessageInput")
-                              .setPosition(xGroupGap, 2*yGroupGap+cL.getHeight()+messageList.getHeight())
-                              .setSize(9*messageInputFieldAndSendButton/10, 1*(chatListTextfieldHeight/16))
-                              .setColor(255)
-                              .setColorBackground(0)
-                              .setColorForeground(0)
-                              .setColorActive(255)
-                              .setFont(f)
-                              .setGroup(chatGroup)
-                              ;
+    .setPosition(xGroupGap, 2*yGroupGap+cL.getHeight()+messageList.getHeight())
+    .setSize(9*messageInputFieldAndSendButton/10, 1*(chatListTextfieldHeight/16))
+    .setColor(255)
+    .setColorBackground(0)
+    .setColorForeground(0)
+    .setColorActive(255)
+    .setFont(f)
+    .setGroup(chatGroup)
+    ;
 
   Button sB = cp5.addButton("send")
-                 .setPosition(xGroupGap + messageInput.getWidth(), 2*yGroupGap+cL.getHeight()+messageList.getHeight())
-                 .setSize(messageInputFieldAndSendButton/10, messageInput.getHeight())
-                 .setFont(f)
-                 .setColorBackground(color(100))
-                 .setGroup(chatGroup)
-                 ;
-  
+    .setPosition(xGroupGap + messageInput.getWidth(), 2*yGroupGap+cL.getHeight()+messageList.getHeight())
+    .setSize(messageInputFieldAndSendButton/10, messageInput.getHeight())
+    .setFont(f)
+    .setColorBackground(color(100))
+    .setGroup(chatGroup)
+    ;
+
   return chatGroup;
 }
 
 //Call when sessions chattable has been updated.
-void updateChatGroup(){
+void updateChatGroup() {
   ListBox messageList = cp5.get(ListBox.class, "MessageList");
-  if(session.currentChatTable != null){
+  if (session.currentChatTable != null) {
     //Alternatively find a way to delete all of the items in the ListBox.
     messageList.clear();
     //SQL QUERY
     db.query("SELECT * FROM " + session.currentChatTable + ";");
-  
+
     //RUNNING THROUGH EACH OF THE RESULTS
     int i = 0;
-    while(db.next()){
-        messageList.addItem(str(db.getInt("UserID"))+": "+db.getString("Message"), i);
-        i++;
+    while (db.next()) {
+      messageList.addItem(str(db.getInt("UserID"))+": "+db.getString("Message"), i);
+      i++;
     }
-  }else{
+  } else {
     Textlabel w = cp5.get(Textlabel.class, "warning");
     w.setText("You don't have any chats.");
     successGroup.hide();
     warningGroup.show();
   }
   //Updates the height to dodge java.lang.IndexOutOfBoundsException, that comes when clicking in the messageList, where there is no items
-  if(messageList.getItems().size()*30<messageListHeight){
+  if (messageList.getItems().size()*30<messageListHeight) {
     messageList.setHeight(messageList.getItems().size()*30);
-  }else{
-    messageList.setHeight(messageListHeight);    
+  } else {
+    messageList.setHeight(messageListHeight);
   }
 }

@@ -20,7 +20,7 @@ void updateChatListGroup(){
     successGroup.hide();
     warningGroup.show();
   }
-  //Updates the height to dodge java.lang.IndexOutOfBoundsException, that comes when clicking in the messageList, where there is no items
+  //Updates the height to dodge java.lang.IndexOutOfBoundsException, that comes when clicking in the messageList, where there are no items
   if(chatList.getItems().size()*30<chatListHeight){
     chatList.setHeight(chatList.getItems().size()*30);
   }else{

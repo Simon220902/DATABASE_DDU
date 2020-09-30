@@ -77,7 +77,7 @@ void controlEvent(ControlEvent theEvent) {
 void keyPressed(){
   //SPACE PRINTS ALL THE INFO IN THE DATABASE
   if (keyCode == 32){
-    //printInfoFromDatabase();
+    printInfoFromDatabase();
   }
 }
 
