@@ -28,9 +28,9 @@ void setup(){
     newUserGroup = MakeNewUserGroup();
     
     sessionGroup = MakeSessionGroup();
-    
+
     chatGroup = MakeChatGroup();
-    
+
     chatListGroup = MakeChatListGroup();
     
     newChatGroup = MakeNewChatGroup();
@@ -46,6 +46,7 @@ void setup(){
     //newUserGroup.group.show();
     loginGroup.show();
     //chatListGroup.show();
+    //updateChatListGroup();
     //sessionGroup.show();
     //chatGroup.show();
     //newChatGroup.show();
@@ -58,18 +59,22 @@ void update(){
   for (TimedGroup ts : timedGroups){
     ts.update();
   }
+  
 }
 
 void draw(){
   update();
   background(0);
-  //rect(bx, by, bw, bh); 
+  if(chatListGroup.isVisible()){
+    fill(150);
+    rect(chatListGroup.getPosition()[0], chatListGroup.getPosition()[1], chatListGroup.getWidth(), chatListGroup.getBackgroundHeight());
+  }
 }
 
 // When a user from the list is picked we create a chat with that user
 void controlEvent(ControlEvent theEvent) {
   controlEventNewChatGroup(theEvent);
-  //controlEventChatListGroup(theEvent);
+  controlEventChatListGroup(theEvent);
   
 }
 
