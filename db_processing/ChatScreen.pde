@@ -22,7 +22,7 @@ void send(int _) {
   if (session.currentChatTable != null) {
     String message = cp5.get(Textfield.class, "MessageInput").getText(); 
 
-    /*
+    
     //The message is incrypted before being sent
     try {
       String myKey = "password";    
@@ -40,7 +40,7 @@ void send(int _) {
 
     catch(Exception e) {
     }
-    */
+    
 
 
     String userID = str(session.currentUserID);
