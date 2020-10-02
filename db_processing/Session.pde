@@ -13,29 +13,51 @@ class Session{
   
   void updateChat(String newChatTable){
     currentChatTable = newChatTable;
-    if(db.connect()){
-      db.query( "SELECT * FROM CHATS WHERE ChatTableName = '"+newChatTable+"';");
-      db.next();
-      currentKey = db.getString("EncryptionKey");
-      int UserID1 = db.getInt("UserID1");
-      int UserID2 = db.getInt("UserID2");
-      db.query( "SELECT UserName FROM USERS WHERE (UserID = " + str(UserID1) + " OR UserId = " + str(UserID2) + " ) AND UserID != "+currentUserID+";");
-      db.next();
+    try{
+      //Get the userids of the chat and encryption key
+      Statement st = DB.createStatement();
+      ResultSet rs = st.executeQuery( "SELECT * FROM CHATS WHERE ChatTableName = '"+newChatTable+"';");
+      rs.next();
+      currentKey = rs.getString("EncryptionKey");
+      int UserID1 = rs.getInt("UserID1");
+      int UserID2 = rs.getInt("UserID2");
+      rs.close();
+      st.close();
+      
+      
+      //Get the username of the other user in the chat.
+      st = DB.createStatement();
+      rs = st.executeQuery("SELECT UserName FROM USERS WHERE (UserID = " + str(UserID1) + " OR UserId = " + str(UserID2) + " ) AND UserID != "+currentUserID+";");
+      rs.next();
       currentUser2 = db.getString("UserName");
+      rs.close();
+      st.close();
+      
       updateChatGroup();
+    }catch (java.sql.SQLException e) {
+        println(e.getMessage());
     }
   }
   
   void pickChat(){
     //We just pick the first chat where our user is a "member"
-    db.query( "SELECT * FROM CHATS WHERE UserID1 = "+str(currentUserID)+" OR UserID2 = "+str(currentUserID)+";");
-    db.next();
-    String newChatTable = db.getString("ChatTableName");
-    if (newChatTable != null){
-      updateChat(newChatTable);
-    }else{
-      //Give some warning message
-      
+    try{
+      Statement st = DB.createStatement();
+      ResultSet rs = st.executeQuery( "SELECT * FROM CHATS WHERE UserID1 = "+str(currentUserID)+" OR UserID2 = "+str(currentUserID)+";");
+      Boolean isThereAChat = rs.next();
+      if (isThereAChat){
+        String newChatTable = rs.getString("ChatTableName");
+        updateChat(newChatTable);
+      }else{
+        Textlabel w = cp5.get(Textlabel.class, "warning");
+        w.setText("The user doesn't have any chats.");
+        successGroup.hide();
+        warningGroup.show();
+      }
+      rs.close();
+      st.close();
+    }catch (java.sql.SQLException e) {
+      println(e.getMessage());
     }
   }
   
