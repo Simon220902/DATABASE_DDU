@@ -44,9 +44,8 @@ void login(int _) {
         //We clear the text fields
         cp5.get(Textfield.class, "username").setText("");
         cp5.get(Textfield.class, "password").setText("");
-    
         //We update the session, sessionGroup and change which Groups are shown
-        session.updateUser(db.getInt("UserID"), username);
+        session.updateUser(rs.getInt("UserID"), username);
         session.pickChat();
         cp5.get(Textlabel.class, "user").setText(session.currentUser);    
     
