@@ -78,7 +78,7 @@ void controlEventNewChatGroup(ControlEvent theEvent) {
       println("THE USERID: ", str(chosenUserID));
       println("THE TEXT OF THE ACTIVE ENTRY: ", chosenUsername);
       //Here we should create a new chattable with the user at the active index and add it to the CHATS table
-      String newChatName = "Chat"+str(session.currentUserID)+str(chosenUserID);
+      String newChatName = session.currentUser + " <-> " + session.currentUser2;
       //WE SHOULD PROBABLY DO THIS IN A BETTER WAY
       String newEncryptionKey = "";
       for (int i = 0; i < 10; i++){
