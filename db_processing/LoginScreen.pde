@@ -1,4 +1,5 @@
 String myKey = "BF3D4300EAD45FA669";
+
 void login(int _) {
   //We need to get the password for the username if it is not the right password we need to do something something:___::_::_:;::?#€&%&#€%#€%#€%
   String username = cp5.get(Textfield.class, "username").getText();
@@ -20,48 +21,60 @@ void login(int _) {
       }
   catch (Exception e) {
         System.out.println("Exception: "+e);
+  }
+
+
+  //We do the database check
+  try {
+    Statement st = DB.createStatement();
+    ResultSet rs = st.executeQuery("SELECT * FROM USERS WHERE UserName = '"+username+"';");
+    Boolean wasThereAResult = rs.next();
+    if (wasThereAResult) {
+      
+      String actualPassword = rs.getString("Password");
+      println("WRITTEN PASSWORD: ", password);
+      println("ACTUAL PASSWORD: ", actualPassword);
+
+      if (password.equals(actualPassword)) {
+        Textlabel s = cp5.get(Textlabel.class, "success");
+        s.setText("Successful login");
+        warningGroup.hide();
+        successGroup.show();
+    
+        //We clear the text fields
+        cp5.get(Textfield.class, "username").setText("");
+        cp5.get(Textfield.class, "password").setText("");
+    
+        //We update the session, sessionGroup and change which Groups are shown
+        session.updateUser(db.getInt("UserID"), username);
+        session.pickChat();
+        cp5.get(Textlabel.class, "user").setText(session.currentUser);    
+    
+        loginGroup.hide();
+        sessionGroup.show();
+        
+        chatListGroup.show();
+        
+        chatGroup.show();
+        updateChatGroup();
+      //HERE WE ARE GOING TO GET INTO THE ACTUAL MESSAGING APP WITH THAT USER.
+      }else {
+        Textlabel w = cp5.get(Textlabel.class, "warning");
+        w.setText("The password is incorrect.");
+        successGroup.hide();
+        warningGroup.show();
       }
-
-  db.query( "SELECT * FROM USERS WHERE UserName = '"+username+"';");
-  db.next();
-  String actualPassword = db.getString("Password");
-
-  if (actualPassword == null) {
-    //WE should probablby handle the java.sql.SQLException.
-    Textlabel w = cp5.get(Textlabel.class, "warning");
-    w.setText("The user doesn't exist.");
-    successGroup.hide();
-    warningGroup.show();
-  } else if (password.equals(actualPassword)) {
-    Textlabel s = cp5.get(Textlabel.class, "success");
-    s.setText("Successful login");
-    warningGroup.hide();
-    successGroup.show();
-
-    //We clear the text fields
-    cp5.get(Textfield.class, "username").setText("");
-    cp5.get(Textfield.class, "password").setText("");
-
-    //We update the session, sessionGroup and change which Groups are shown
-    session.updateUser(db.getInt("UserID"), username);
-    session.pickChat();
-    cp5.get(Textlabel.class, "user").setText(session.currentUser);    
-
-    loginGroup.hide();
-    sessionGroup.show();
-    
-    chatListGroup.show();
-    
-    chatGroup.show();
-    updateChatGroup();
-    
-    
-    //HERE WE ARE GOING TO GET INTO THE ACTUAL MESSAGING APP WITH THAT USER.
-  } else {
-    Textlabel w = cp5.get(Textlabel.class, "warning");
-    w.setText("The password is incorrect.");
-    successGroup.hide();
-    warningGroup.show();
+    }else{
+      //WE should probablby handle the java.sql.SQLException.
+      Textlabel w = cp5.get(Textlabel.class, "warning");
+      w.setText("The user doesn't exist.");
+      successGroup.hide();
+      warningGroup.show();
+    } 
+    rs.close();
+    st.close();
+  }catch (java.sql.SQLException e) {
+    println(e.getMessage());
   }
 }
 
