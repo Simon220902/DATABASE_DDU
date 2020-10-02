@@ -10,52 +10,52 @@ void createNewUser(int _) {
   //3rd if all of the above apply then add the new user and go back to 
 
   if (password1.equals(password2)) {
-    
-    db.query( "SELECT UserName FROM USERS WHERE UserName = '"+username+"';");
-    db.next();
-    String u = db.getString("UserName");
-    if (u == null) {
+    try {
+      Statement st = DB.createStatement();
+      ResultSet rs = st.executeQuery("SELECT UserName FROM USERS WHERE UserName = '"+username+"';");
+      //If the user EXISTS
+      if (rs.next()) {
+        Textlabel w = cp5.get(Textlabel.class, "warning");
+        w.setText("The user already exists.");
+        successGroup.hide();
+        warningGroup.show();
 
-      try {
-        //Vha. MessageDigest kan vi anvende en hashing algoritme.... her SHA-256 ...
-        //prøv f.eks. MD-5 og se om du kan bryde den ved at søge på nettet!
-        MessageDigest md = MessageDigest.getInstance("SHA-256");         
-        //MassageDigest objektet "fodres" med teksten, der skal "hashes"
-        md.update(password1.getBytes());    
-        //digest funktionen giver "hash-værdien", men i hexadecimale bytes 
-        byte[] byteList = md.digest();
-        //Her anvendes processings hex funktion, der kan konvertere hexadecimale bytes til Strings
-        //så det er muligt at læse "hash-værdien"
-        StringBuffer hashedValueBuffer = new StringBuffer();
-        for (byte b : byteList)hashedValueBuffer.append(hex(b)); 
-        //We insert the new user and save the change to the data base
-        db.execute("INSERT INTO Users (UserName, Password) VALUES ('" + username + "', '" + hashedValueBuffer.toString() + "');");
-        
+        rs.close();
+        st.close();
       }
-      catch (Exception e) {
-        System.out.println("Exception: "+e);
+      //If the user doesn't already exist
+      else {
+        rs.close();
+        st.close();
+
+        try {
+          //Vha. MessageDigest kan vi anvende en hashing algoritme.... her SHA-256 ...
+          //prøv f.eks. MD-5 og se om du kan bryde den ved at søge på nettet!
+          MessageDigest md = MessageDigest.getInstance("SHA-256");         
+          //MassageDigest objektet "fodres" med teksten, der skal "hashes"
+          md.update(password1.getBytes());    
+          //digest funktionen giver "hash-værdien", men i hexadecimale bytes 
+          byte[] byteList = md.digest();
+          //Her anvendes processings hex funktion, der kan konvertere hexadecimale bytes til Strings
+          //så det er muligt at læse "hash-værdien"
+          StringBuffer hashedValueBuffer = new StringBuffer();
+          for (byte b : byteList) hashedValueBuffer.append(hex(b));
+          //We return before getting the exception below
+          returnToLogin(0);
+          //We insert the new user and save the change to the data base
+          st = DB.createStatement();
+          st.executeQuery("INSERT INTO Users (UserName, Password) VALUES ('" + username + "', '" + hashedValueBuffer.toString() + "');");
+          rs.close();
+          st.close();
+        }
+        catch (Exception e) {
+          System.out.println("Exception: "+e);
+        }
       }
-      //We show the successlabel
-      Textlabel s = cp5.get(Textlabel.class, "success");
-      s.setText("New user created");
-      warningGroup.hide();
-      successGroup.show();
-
-      //We clear the text fields
-      cp5.get(Textfield.class, "New username").setText("");
-      cp5.get(Textfield.class, "New password").setText("");
-      cp5.get(Textfield.class, "Repeat password").setText("");
-
-      //We go back to the login Group
-      newUserGroup.hide();
-      loginGroup.show();
-    } else {
-      Textlabel w = cp5.get(Textlabel.class, "warning");
-      w.setText("The user already exists.");
-      successGroup.hide();
-      warningGroup.show();
-    }
-  } else {
+    }catch (java.sql.SQLException e) {
+        println(e.getMessage());
+      }
+  }else {
     Textlabel w = cp5.get(Textlabel.class, "warning");
     w.setText("The passwords don't match.");
     successGroup.hide();

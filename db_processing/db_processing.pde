@@ -1,10 +1,11 @@
-import de.bezier.data.sql.*;
 import controlP5.*;
 import javax.crypto.*; 
 import java.security.*;
 import java.util.Arrays;
 import java.util.Base64;
 import java.security.*;
+import java.sql.*;
+import java.util.Map;
 
 ControlP5 cp5;
 
@@ -21,9 +22,27 @@ ArrayList<TimedGroup> timedGroups;
 
 Session session = new Session();
 
-SQLite db;
+//OnlineDB relaterede ting
+String url = "jdbc:postgresql://balarama.db.elephantsql.com:5432/kgbjldox";
+String username = "kgbjldox";
+String password = "HvrRx5ILj45gj2ujycZlPcJRLykaX2Ru";
+
+Connection DB;
 
 void setup(){
+    try {
+      Class.forName("org.postgresql.Driver");
+    }
+    catch (java.lang.ClassNotFoundException e) {
+        System.out.println(e.getMessage());
+    }
+    try {
+      DB = DriverManager.getConnection(url, username, password);
+    }
+    catch (SQLException e) {
+        System.out.println(e.getMessage());
+    }
+  
     size( 900, 700 );
     //CP5 things
     cp5 = new ControlP5(this);
@@ -48,16 +67,7 @@ void setup(){
     timedGroups.add(successGroup);
     timedGroups.add(warningGroup);
     
-    //newUserGroup.group.show();
     loginGroup.show();
-    //chatListGroup.show();
-    //updateChatListGroup();
-    //sessionGroup.show();
-    //chatGroup.show();
-    //newChatGroup.show();
-    
-    db = new SQLite( this, "chat.db" );  // open database file
-    db.connect();
 }
 
 void update(){
@@ -80,43 +90,4 @@ void draw(){
 void controlEvent(ControlEvent theEvent) {
   controlEventNewChatGroup(theEvent);
   controlEventChatListGroup(theEvent);
-  
-}
-
-
-void keyPressed(){
-  //SPACE PRINTS ALL THE INFO IN THE DATABASE
-  if (keyCode == 32){
-    printInfoFromDatabase();
-  }
-}
-
-void printInfoFromDatabase(){
-  ArrayList<String> chatTableNames = new ArrayList<String>();
-  // list users
-  db.query( "SELECT * FROM USERS;");
-  
-  println("WE WRITE OUT ALL THE USERS: ");
-  while (db.next()){
-      println( " | ", db.getInt("UserID"), " | ", db.getString("UserName"), " | ", db.getString("Password"), " | ");
-  }
-  // list users
-  db.query( "SELECT * FROM CHATS;");
-  
-  println("WE WRITE OUT ALL THE CHATS: ");
-  while (db.next()){
-      String tableName = db.getString("ChatTableName");
-      chatTableNames.add(tableName);
-      println( " | ", db.getInt("ChatID"), " | ", tableName, " | ", db.getString("UserID1"), " | ", db.getString("UserID2"), " | ");
-  }
-  
-  //All messages in alle the chats
-  for (String tableName : chatTableNames){
-    println("WE PRINT ALL THE MESSAGES FROM ", tableName);
-    
-    db.query( "SELECT * FROM "+tableName);
-    while (db.next()){
-        println( " | ", db.getInt("MessageID"), " | ", db.getString("Message"), " | ", db.getString("UserID"), " | ");
-    }
-  }
 }
