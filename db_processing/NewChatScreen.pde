@@ -1,4 +1,5 @@
 import java.util.Map;
+int backButtonHeight = 40;
 
 Group MakeNewChatGroup(){
   f = createFont("Times", 15);
@@ -26,7 +27,6 @@ Group MakeNewChatGroup(){
                    ;
 
   int yUsersList = yGroupGap+ncL.getHeight();
-  int backButtonHeight = 40;
   
   ListBox usersList = cp5.addListBox("UsersList")
                            .setPosition(xGroupGap, yUsersList)
@@ -56,12 +56,22 @@ void updateNewChatGroup(){
   ListBox usersList = cp5.get(ListBox.class, "UsersList");
   usersList.clear();
   //We do the query of which users in USERS that the currentUserID doesn't have any chats with (we do a longer compare with the chatstable (both userID1 and 2))
-  db.query("SELECT * FROM USERS WHERE (UserID NOT IN (SELECT UserID1 FROM CHATS WHERE UserID2=" + str(session.currentUserID) + ")) AND (UserID NOT IN (SELECT UserID2 FROM CHATS WHERE UserID1=" + str(session.currentUserID) + ")) AND UserID != " + str(session.currentUserID) + ";");
-  while(db.next()){
-    usersList.addItem(db.getString("UserName"),db.getInt("UserID"));
+  try{
+    Statement st = DB.createStatement();
+    ResultSet rs = st.executeQuery("SELECT * FROM USERS WHERE (UserID NOT IN (SELECT UserID1 FROM CHATS WHERE UserID2=" + str(session.currentUserID) + ")) AND (UserID NOT IN (SELECT UserID2 FROM CHATS WHERE UserID1=" + str(session.currentUserID) + ")) AND UserID != " + str(session.currentUserID) + ";");
+    while(rs.next()){
+      usersList.addItem(rs.getString("UserName"),rs.getInt("UserID"));
+    }
+  }catch (java.sql.SQLException e) {
+    println(e.getMessage());
   }
-  //We update the height, the itemheight being 30.
-  usersList.setHeight(usersList.getItems().size()*30) ;
+  
+  //We update the height
+  if(usersList.getItems().size()*30 < newChatGroup.getBackgroundHeight() - 3*yGroupGap - backButtonHeight){
+    usersList.setHeight(usersList.getItems().size()*30);
+  }else{
+    usersList.setHeight(newChatGroup.getBackgroundHeight() - 3*yGroupGap - backButtonHeight);    
+  }
 }
 
 // When a user from the list is picked we create a chat with that user
@@ -84,10 +94,27 @@ void controlEventNewChatGroup(ControlEvent theEvent) {
       for (int i = 0; i < 10; i++){
         newEncryptionKey += str(random(-200,400)*i);
       }
+      
       //Creating the new chat table
-      db.execute("CREATE TABLE " + newChatName + " ( MessageID INTEGER PRIMARY KEY AUTOINCREMENT, Message TEXT NOT NULL, Time TEXT, UserID INT NOT NULL);");
+      try{
+        Statement st = DB.createStatement();
+        st.executeUpdate("CREATE TABLE " + newChatName + " ( MessageID SERIAL PRIMARY KEY, Message TEXT NOT NULL, Time TEXT, UserID INT NOT NULL);");
+        st.close();
+      
+      }catch (java.sql.SQLException e) {
+        println(e.getMessage());
+      }
+      
       //Adding this to the CHATS table
-      db.execute("INSERT INTO CHATS (ChatTableName, EncryptionKey, UserID1, UserID2) VALUES ('" + newChatName +  "', '" + newEncryptionKey + "', " + str(session.currentUserID) + ", " + str(chosenUserID) + ");");
+      try{
+        Statement st = DB.createStatement();
+        st.executeUpdate("INSERT INTO CHATS (ChatTableName, EncryptionKey, UserID1, UserID2) VALUES ('" + newChatName +  "', '" + newEncryptionKey + "', " + str(session.currentUserID) + ", " + str(chosenUserID) + ");");
+        st.close();
+       
+      }catch (java.sql.SQLException e) {
+        println(e.getMessage());
+      }      
+      
       //Set this new chattable as the sessions chattable
       session.updateChat(newChatName);
       //Give a success message and return to the chat Groups.
