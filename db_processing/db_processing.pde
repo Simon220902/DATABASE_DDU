@@ -5,6 +5,7 @@ import java.security.*;
 import java.util.Arrays;
 import java.util.Base64;
 import java.security.*;
+import java.sql.*;
 
 ControlP5 cp5;
 
@@ -21,9 +22,29 @@ ArrayList<TimedGroup> timedGroups;
 
 Session session = new Session();
 
+//OnlineDB relaterede ting
+String url = "jdbc:postgresql://balarama.db.elephantsql.com:5432/kgbjldox";
+String username = "kgbjldox";
+String password = "HvrRx5ILj45gj2ujycZlPcJRLykaX2Ru";
+
+Connection DB;
+
 SQLite db;
 
 void setup(){
+    try {
+      Class.forName("org.postgresql.Driver");
+    }
+    catch (java.lang.ClassNotFoundException e) {
+        System.out.println(e.getMessage());
+    }
+    try {
+      DB = DriverManager.getConnection(url, username, password);
+    }
+    catch (SQLException e) {
+        System.out.println(e.getMessage());
+    }
+  
     size( 900, 700 );
     //CP5 things
     cp5 = new ControlP5(this);
