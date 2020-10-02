@@ -1,79 +1,99 @@
 String myKey = "BF3D4300EAD45FA669";
 
+boolean notSQLInjection(String s) {
+  char noGoCharacters[] = new char[]{'-', '%', '*'};
+  for (int i = 0; i < s.length(); i++) {
+    char sChar = s.charAt(i);
+    for (int j = 0; j < noGoCharacters.length; j++) {
+      char noGoChar = noGoCharacters[j];
+      if (sChar == noGoChar) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
 void login(int _) {
   //We need to get the password for the username if it is not the right password we need to do something something:___::_::_:;::?#€&%&#€%#€%#€%
   String username = cp5.get(Textfield.class, "username").getText();
   String password = cp5.get(Textfield.class, "password").getText();
-  try {
-        //Vha. MessageDigest kan vi anvende en hashing algoritme.... her SHA-256 ...
-        //prøv f.eks. MD-5 og se om du kan bryde den ved at søge på nettet!
-        MessageDigest md = MessageDigest.getInstance("SHA-256");         
-        //MassageDigest objektet "fodres" med teksten, der skal "hashes"
-        md.update(password.getBytes());    
-        //digest funktionen giver "hash-værdien", men i hexadecimale bytes 
-        byte[] byteList = md.digest();
-        //Her anvendes processings hex funktion, der kan konvertere hexadecimale bytes til Strings
-        //så det er muligt at læse "hash-værdien"
-        StringBuffer hashedValueBuffer = new StringBuffer();
-        for (byte b : byteList)hashedValueBuffer.append(hex(b)); 
-        //We insert the new user and save the change to the data base
-        password = hashedValueBuffer.toString();
-      }
-  catch (Exception e) {
-        System.out.println("Exception: "+e);
-  }
+  if (notSQLInjection(username)) {
+    try {
+      //Vha. MessageDigest kan vi anvende en hashing algoritme.... her SHA-256 ...
+      //prøv f.eks. MD-5 og se om du kan bryde den ved at søge på nettet!
+      MessageDigest md = MessageDigest.getInstance("SHA-256");         
+      //MassageDigest objektet "fodres" med teksten, der skal "hashes"
+      md.update(password.getBytes());    
+      //digest funktionen giver "hash-værdien", men i hexadecimale bytes 
+      byte[] byteList = md.digest();
+      //Her anvendes processings hex funktion, der kan konvertere hexadecimale bytes til Strings
+      //så det er muligt at læse "hash-værdien"
+      StringBuffer hashedValueBuffer = new StringBuffer();
+      for (byte b : byteList)hashedValueBuffer.append(hex(b)); 
+      //We insert the new user and save the change to the data base
+      password = hashedValueBuffer.toString();
+    }
+    catch (Exception e) {
+      System.out.println("Exception: "+e);
+    }
 
+    //We do the database check
+    try {
+      Statement st = DB.createStatement();
+      ResultSet rs = st.executeQuery("SELECT * FROM USERS WHERE UserName = '"+username+"';");
+      Boolean wasThereAResult = rs.next();
+      if (wasThereAResult) {
+        String actualPassword = rs.getString("Password");
+        println("WRITTEN PASSWORD: ", password);
+        println("ACTUAL PASSWORD: ", actualPassword);
 
-  //We do the database check
-  try {
-    Statement st = DB.createStatement();
-    ResultSet rs = st.executeQuery("SELECT * FROM USERS WHERE UserName = '"+username+"';");
-    Boolean wasThereAResult = rs.next();
-    if (wasThereAResult) {
-      
-      String actualPassword = rs.getString("Password");
-      println("WRITTEN PASSWORD: ", password);
-      println("ACTUAL PASSWORD: ", actualPassword);
+        if (password.equals(actualPassword)) {
+          Textlabel s = cp5.get(Textlabel.class, "success");
+          s.setText("Successful login");
+          warningGroup.hide();
+          successGroup.show();
 
-      if (password.equals(actualPassword)) {
-        Textlabel s = cp5.get(Textlabel.class, "success");
-        s.setText("Successful login");
-        warningGroup.hide();
-        successGroup.show();
-    
-        //We clear the text fields
-        cp5.get(Textfield.class, "username").setText("");
-        cp5.get(Textfield.class, "password").setText("");
-        //We update the session, sessionGroup and change which Groups are shown
-        session.updateUser(rs.getInt("UserID"), username);
-        session.pickChat();
-        cp5.get(Textlabel.class, "user").setText(session.currentUser);    
-    
-        loginGroup.hide();
-        sessionGroup.show();
-        
-        chatListGroup.show();
-        
-        chatGroup.show();
-        updateChatGroup();
-      //HERE WE ARE GOING TO GET INTO THE ACTUAL MESSAGING APP WITH THAT USER.
-      }else {
+          //We clear the text fields
+          cp5.get(Textfield.class, "username").setText("");
+          cp5.get(Textfield.class, "password").setText("");
+          //We update the session, sessionGroup and change which Groups are shown
+          session.updateUser(rs.getInt("UserID"), username);
+          session.pickChat();
+          cp5.get(Textlabel.class, "user").setText(session.currentUser);    
+
+          loginGroup.hide();
+          sessionGroup.show();
+
+          chatListGroup.show();
+
+          chatGroup.show();
+          updateChatGroup();
+          //HERE WE ARE GOING TO GET INTO THE ACTUAL MESSAGING APP WITH THAT USER.
+        } else {
+          Textlabel w = cp5.get(Textlabel.class, "warning");
+          w.setText("The password is incorrect.");
+          successGroup.hide();
+          warningGroup.show();
+        }
+      } else {
+        //WE should probablby handle the java.sql.SQLException.
         Textlabel w = cp5.get(Textlabel.class, "warning");
-        w.setText("The password is incorrect.");
+        w.setText("The user doesn't exist.");
         successGroup.hide();
         warningGroup.show();
-      }
-    }else{
-      //WE should probablby handle the java.sql.SQLException.
-      Textlabel w = cp5.get(Textlabel.class, "warning");
-      w.setText("The user doesn't exist.");
-      successGroup.hide();
-      warningGroup.show();
-    } 
-    rs.close();
-    st.close();
-  }catch (java.sql.SQLException e) {
-    println(e.getMessage());
+      } 
+      rs.close();
+      st.close();
+    }
+    catch (java.sql.SQLException e) {
+      println(e.getMessage());
+    }
+  } else {
+    Textlabel w = cp5.get(Textlabel.class, "warning");
+    w.setText("The username is not valid.");
+    successGroup.hide();
+    warningGroup.show();
   }
 }
 
@@ -89,14 +109,14 @@ Group MakeLoginGroup() {
   int yBorder = int(height / 10);
 
   Group loginGroup = cp5.addGroup("LoginGroup")
-                        .setPosition(xBorder, yBorder)
-                        .setWidth(width - 2*xBorder)
-                        .setBackgroundHeight(height - 2*yBorder)
-                        .setBackgroundColor(color(200))
-                        .hideBar()
-                        .hide()
-                        ;
-  
+    .setPosition(xBorder, yBorder)
+    .setWidth(width - 2*xBorder)
+    .setBackgroundHeight(height - 2*yBorder)
+    .setBackgroundColor(color(200))
+    .hideBar()
+    .hide()
+    ;
+
   int xGroupBorder = loginGroup.getWidth() / 8;
   int yGroupBorder = loginGroup.getBackgroundHeight() / 10;
   int yGap = yGroupBorder; //This value probably needs to be changed

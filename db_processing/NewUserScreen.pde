@@ -2,7 +2,8 @@ void createNewUser(int _) {
   String username = cp5.get(Textfield.class, "New username").getText();
   String password1 = cp5.get(Textfield.class, "New password").getText();
   String password2 = cp5.get(Textfield.class, "Repeat password").getText();
-
+  //0th check whether the username can be an sql injection
+  if(notSQLInjection(username)){
   //1st check whether the two passwords are the same
 
   //2nd check whether there already exists an entry in the user database with that user name.
@@ -58,6 +59,13 @@ void createNewUser(int _) {
   }else {
     Textlabel w = cp5.get(Textlabel.class, "warning");
     w.setText("The passwords don't match.");
+    successGroup.hide();
+    warningGroup.show();
+  }
+  //If it is an sql injection give a warning
+  }else {
+    Textlabel w = cp5.get(Textlabel.class, "warning");
+    w.setText("The username is not valid.");
     successGroup.hide();
     warningGroup.show();
   }
