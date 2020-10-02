@@ -29,7 +29,7 @@ class Session{
       st = DB.createStatement();
       rs = st.executeQuery("SELECT UserName FROM USERS WHERE (UserID = " + str(UserID1) + " OR UserId = " + str(UserID2) + " ) AND UserID != "+currentUserID+";");
       rs.next();
-      currentUser2 = db.getString("UserName");
+      currentUser2 = rs.getString("UserName");
       rs.close();
       st.close();
       
