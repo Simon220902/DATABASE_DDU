@@ -53,7 +53,7 @@ void send(int _) {
     cp5.get(Textfield.class, "MessageInput").setText("");
     //We update the list of messages
     ListBox messageList = cp5.get(ListBox.class, "MessageList");
-    messageList.addItem(userID+": "+message, messageList.getItems().size());
+    messageList.addItem(session.currentUser+": "+message, messageList.getItems().size());
     //Updates the height to dodge java.lang.IndexOutOfBoundsException, that comes when clicking in the messageList, where there is no items
     if (messageList.getItems().size()*30<messageListHeight) {
       messageList.setHeight(messageList.getItems().size()*30);

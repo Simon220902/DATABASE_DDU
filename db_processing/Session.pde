@@ -27,7 +27,7 @@ class Session{
       
       //Get the username of the other user in the chat.
       st = DB.createStatement();
-      rs = st.executeQuery("SELECT UserName FROM USERS WHERE (UserID = " + str(UserID1) + " OR UserId = " + str(UserID2) + " ) AND UserID != "+currentUserID+";");
+      rs = st.executeQuery("SELECT UserName FROM USERS WHERE (UserID = " + str(UserID1) + " OR UserId = " + str(UserID2) + " ) AND UserID != "+str(currentUserID)+";");
       rs.next();
       currentUser2 = rs.getString("UserName");
       rs.close();
